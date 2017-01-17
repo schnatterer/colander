@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>info.schnatterer.icaltools</groupId>
-        <artifactId>icaltools-parent</artifactId>
+        <groupId>info.schnatterer.colander</groupId>
+        <artifactId>colander-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>icaltools-service</artifactId>
-    <name>icaltools-service</name>
+    <artifactId>colander-core</artifactId>
+    <name>colander-core</name>
 
     <packaging>jar</packaging>
 

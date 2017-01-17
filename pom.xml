@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>info.schnatterer.icaltools</groupId>
-    <artifactId>icaltools-parent</artifactId>
+    <groupId>info.schnatterer.colander</groupId>
+    <artifactId>colander-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
-    <name>icaltools-parent</name>
+    <name>colander-parent</name>
 
 
     <properties>
@@ -18,8 +18,8 @@
     </properties>
 
     <modules>
-        <module>icaltools-service</module>
-        <module>icaltools-cli</module>
+        <module>colander-core</module>
+        <module>colander-cli</module>
     </modules>
 
     <dependencyManagement>

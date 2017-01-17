@@ -1,4 +1,4 @@
-package info.schnatterer.icaltools;
+package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;

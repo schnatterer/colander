@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>colander.log</file>
+        <append>true</append>
+        <encoder>
+            <Pattern>%d{ISO8601} [%thread] %-5level %logger - %m%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%m%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- TODO STDOUT should have info level should contain only logs from info.schnatterer.*-->
+    <root level="TRACE">
+        <appender-ref ref="fileAppender" />
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

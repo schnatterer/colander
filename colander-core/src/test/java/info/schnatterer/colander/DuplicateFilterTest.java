@@ -1,4 +1,4 @@
-package info.schnatterer.icaltools;
+package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;

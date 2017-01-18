@@ -92,6 +92,12 @@
                 <version>3.0</version>
                 <configuration>
                     <header>LICENSE</header>
+                    <mapping>
+                        <Jenkinsfile>JAVADOC_STYLE</Jenkinsfile>
+                    </mapping>
+                    <excludes>
+                        <exclude>LICENSE</exclude>
+                    </excludes>
                 </configuration>
 
                 <executions>

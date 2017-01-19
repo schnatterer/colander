@@ -57,13 +57,13 @@ node { // No specific label
 
         stage('Build') {
             // Run the maven build
-            mvn 'clean install -DskipTests'
+            mvn 'install -DskipTests'
             archive '**/target/*.jar'
         }
 
         stage('Test') {
             // Archive JUnit results using special step for pipeline plugin
-            mvn 'surefire:test'
+            mvn 'test'
             // Archive JUnit results, if any
             junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
         }

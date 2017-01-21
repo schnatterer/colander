@@ -1,4 +1,4 @@
-# 📆 colander - filtering your calendar 📆
+# 📆 colander - filtering your calendar 
 
 [![Build Status](https://jenkins.schnatterer.info/job/colander/job/develop//badge/icon)](https://jenkins.schnatterer.info/job/colander/job/develop/)
 [![Quality Gates](https://sonarqube.schnatterer.info/api/badges/gate?key=info.schnatterer.colander:colander-parent)](http://sonarqube.schnatterer.info/dashboard?id=info.schnatterer.colander%3Acolander-parent&did=1)

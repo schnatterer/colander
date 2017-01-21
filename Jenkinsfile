@@ -29,14 +29,11 @@ node { // No specific label
         // Keep only the last 10 build to preserve space
         //buildDiscarder(logRotator(numToKeepStr: '10')),
         [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '10']],
+        // Configure GitHub project in order to start builds on push
+        [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/schnatterer/colander'],
         // Don't run concurrent builds for a branch, because they use the same workspace directory
         disableConcurrentBuilds()
     ])
-    properties([
-        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10']],
-        disableConcurrentBuilds(),
-        pipelineTriggers([])])
-
 
     def CREDENTIALS = [
         $class       : 'StringBinding',

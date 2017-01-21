@@ -31,7 +31,7 @@ node { // No specific label
         [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '10']],
         // Configure GitHub project in order to start builds on push
         [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/schnatterer/colander'],
-        pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *') ]),
+        pipelineTriggers([[$class: 'GitHubPushTrigger']]),
         // Don't run concurrent builds for a branch, because they use the same workspace directory
         disableConcurrentBuilds()
     ])

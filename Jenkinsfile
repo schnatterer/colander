@@ -62,7 +62,7 @@ node { // No specific label
         stage('Build') {
             // Run the maven build
             mvn 'install -DskipTests'
-            archive '**/target/*.jar'
+            archive '**/target/*.jar,**/target/*.zip'
         }
 
         stage('Test') {

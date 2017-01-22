@@ -31,11 +31,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Parser for CLI-arguments
  */
-class ArgumentParser {
-    private static final Logger LOG = LoggerFactory.getLogger(ArgumentParser.class);
+class ArgumentsParser {
+    private static final Logger LOG = LoggerFactory.getLogger(ArgumentsParser.class);
 
     /** Use {@link #read(String[], String)} instead of constructor. */
-    ArgumentParser() {
+    ArgumentsParser() {
     }
 
     /**

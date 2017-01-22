@@ -67,7 +67,7 @@ public class Arguments {
 
     @Override
     public String toString() {
-        return "ArgumentParser{" +
+        return "Arguments{" +
             "help=" + help +
             ", mainArguments=" + mainArguments +
             '}';

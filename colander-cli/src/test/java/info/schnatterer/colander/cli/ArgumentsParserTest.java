@@ -23,7 +23,7 @@
  */
 package info.schnatterer.colander.cli;
 
-import info.schnatterer.colander.cli.ArgumentParser.ArgumentException;
+import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
 import org.hamcrest.junit.ExpectedException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,14 +36,14 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
-public class ArgumentParserTest {
+public class ArgumentsParserTest {
     private static final String PROGRAM_NAME = "progr";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     /** Logger of class under test. */
-    private static final TestLogger LOG = TestLoggerFactory.getTestLogger(ArgumentParser.class);
+    private static final TestLogger LOG = TestLoggerFactory.getTestLogger(ArgumentsParser.class);
 
     /** Rest logger before each test. **/
     @Rule
@@ -80,7 +80,7 @@ public class ArgumentParserTest {
     }
 
     private Arguments read(String ... argv) {
-        return ArgumentParser.read(argv, PROGRAM_NAME);
+        return ArgumentsParser.read(argv, PROGRAM_NAME);
     }
 
     /**

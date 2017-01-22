@@ -55,8 +55,27 @@
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
-            <!-- Assemble zip -->
             <plugin>
+                <!-- Create a runnable jar -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                   <!-- Don't use version name for main jar, keeps .sh and .bat files simpler.-->
+                    <finalName>${project.artifactId}</finalName>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!-- Within assembly, all dependencies are within lib dir -->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>info.schnatterer.colander.cli.ColanderCli</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Assemble zip -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.0.0</version>

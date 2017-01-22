@@ -24,47 +24,47 @@
 package info.schnatterer.colander.cli;
 
 import info.schnatterer.colander.cli.Arguments.ParameterException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hamcrest.junit.ExpectedException;
+import org.junit.Rule;
+import org.junit.Test;
 
-/**
- * Main class of Command Line Interface for colander.
- */
-class ColanderCli {
-    static final String PROGRAM_NAME = "colander";
-    private static final Logger LOG = LoggerFactory.getLogger(ColanderCli.class);
+import static org.junit.Assert.*;
 
-    /**
-     * Main class should not be instantiated
-     */
-    ColanderCli() {
+public class ArgumentsTest {
+    private static final String PROGRAM_NAME = "progr";
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
+    @Test
+    public void read() throws Exception {
+        Arguments args = read("input", "output");
+
+        assertEquals("Input file", "input", args.getInputFile());
+        assertEquals("Output file", "output", args.getOutputFile());
     }
 
-    /**
-     * Entry point of the application.
-     *
-     * @param args command line arguments
-     */
-    @SuppressWarnings("squid:S1166") // Message is logged, stack traces are deliberately hidden to not bloat CLI output
-    public static void main(String[] args) {
-    /* Parse command line arguments/parameter (command line interface) */
-        Arguments cliParams = null;
-        try {
-            cliParams = Arguments.read(args, PROGRAM_NAME);
-        } catch (ParameterException e) {
-            LOG.error(e.getMessage());
-            System.exit(-1);
-        }
+    @Test
+    public void readInputOnly() throws Exception {
+        Arguments args = read("input");
 
-        if (!cliParams.isHelp()) {
-            startColander(cliParams);
-        } else {
-            LOG.info(cliParams.usage(""));
-        }
+        assertEquals("Input file", "input", args.getInputFile());
+        assertNull("Output file", args.getOutputFile());
     }
 
-    static void startColander(Arguments cliParams) {
-        /* TODO Successfully read command line params, do something with it ...*/
-        LOG.info("cliparams={}", cliParams);
+    @Test
+    public void readNoMainArgs() throws Exception {
+        expectedException.expect(ParameterException.class);
+        expectedException.expectMessage("Main parameters");
+        read("");
+    }
+
+    @Test
+    public void readHelp() throws Exception {
+        assertTrue("Unexpected return on read()", read("input", "output", "--help").isHelp());
+    }
+
+    private Arguments read(String ... argv) {
+        return Arguments.read(argv, PROGRAM_NAME);
     }
 }

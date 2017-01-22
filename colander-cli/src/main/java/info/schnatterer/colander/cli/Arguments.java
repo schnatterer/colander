@@ -23,18 +23,15 @@
  */
 package info.schnatterer.colander.cli;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parser for CLI-arguments
+ * Value object that holds the arguments passed to CLI.
  */
-class Arguments {
-    /** Using the {@link JCommander} framework to parse parameters. */
-    private JCommander commander = null;
+public class Arguments {
 
     /** List of unnamed arguments.*/
     @Parameter(required = true, description = "<input.ics> [<output.ics]>")
@@ -42,30 +39,6 @@ class Arguments {
 
     @Parameter(names = "--help", help = true, description = "(optional) Show this message")
     private boolean help;
-
-    /** Use {@link #read(String[], String)} instead of constructor. */
-    Arguments() {}
-
-    /**
-     * Reads the command line parameters.
-     *
-     * @param argv arguments passed via CLI
-     * @return an instance of {@link Arguments}, never {@code null}
-     * @throws ParameterException on syntax error
-     */
-    static Arguments read(String[] argv, @SuppressWarnings("SameParameterValue") String programName) {
-        Arguments cliParams = new Arguments();
-        try {
-            cliParams.commander = new JCommander(cliParams);
-            cliParams.commander.setProgramName(programName);
-            cliParams.commander.parse(argv);
-        } catch (com.beust.jcommander.ParameterException e) {
-            // Rethrow, so the main application knows something went wrong
-            throw new ParameterException(cliParams.usage(e.getMessage() + System.lineSeparator()), e);
-        }
-
-        return cliParams;
-    }
 
     /**
      * @return input file name. Never {@code null}.
@@ -92,39 +65,13 @@ class Arguments {
         return help;
     }
 
-    /**
-     * @param prefix written before usage
-     * @return the usage string
-     */
-    public String usage(String prefix) {
-        StringBuilder usage = new StringBuilder(prefix);
-        commander.usage(usage, "  ");
-        return usage.toString();
-    }
-
     @Override
     public String toString() {
-        return "Arguments{" +
+        return "ArgumentParser{" +
             "help=" + help +
             ", mainArguments=" + mainArguments +
             '}';
     }
 
-    /**
-     * Exception thrown when parameter syntax is invalid.
-     */
-    static class ParameterException extends RuntimeException {
-        /**
-         * Constructs a new runtime exception with the specified detail message and cause.
-         * <p>Note that the detail message associated with {@code cause} is <i>not</i> automatically incorporated in
-         * this runtime exception's detail message.
-         *
-         * @param  message the detail message (which is saved for later retrieval by the {@link #getMessage()} method).
-         * @param  cause the cause (which is saved for later retrieval by the {@link #getCause()} method).
-         *               (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or unknown.)
-         */
-        ParameterException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
+
 }

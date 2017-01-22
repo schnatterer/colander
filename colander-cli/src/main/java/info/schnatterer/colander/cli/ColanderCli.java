@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2017 Johannes Schnatterer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@
  */
 package info.schnatterer.colander.cli;
 
-import info.schnatterer.colander.cli.Arguments.ParameterException;
+import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,35 +31,29 @@ import org.slf4j.LoggerFactory;
  * Main class of Command Line Interface for colander.
  */
 class ColanderCli {
-    static final String PROGRAM_NAME = "colander";
+    private static final String PROGRAM_NAME = "colander";
     private static final Logger LOG = LoggerFactory.getLogger(ColanderCli.class);
 
-    /**
-     * Main class should not be instantiated
-     */
+    /** Main class should not be instantiated */
     ColanderCli() {
     }
 
     /**
-     * Entry point of the application.
-     *
-     * @param args command line arguments
+     * Entry point of the application
+     * @param args arguments passed via CLI
      */
-    @SuppressWarnings("squid:S1166") // Message is logged, stack traces are deliberately hidden to not bloat CLI output
+    @SuppressWarnings("squid:S1166") // Exceptions are logged in ArgumentsParser by contract.
     public static void main(String[] args) {
     /* Parse command line arguments/parameter (command line interface) */
         Arguments cliParams = null;
         try {
-            cliParams = Arguments.read(args, PROGRAM_NAME);
-        } catch (ParameterException e) {
-            LOG.error(e.getMessage());
+            cliParams = ArgumentsParser.read(args, PROGRAM_NAME);
+        } catch (ArgumentException e) {
             System.exit(-1);
         }
 
         if (!cliParams.isHelp()) {
             startColander(cliParams);
-        } else {
-            LOG.info(cliParams.usage(""));
         }
     }
 

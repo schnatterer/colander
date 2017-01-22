@@ -23,18 +23,31 @@
  */
 package info.schnatterer.colander.cli;
 
-import info.schnatterer.colander.cli.Arguments.ParameterException;
+import info.schnatterer.colander.cli.ArgumentParser.ArgumentException;
 import org.hamcrest.junit.ExpectedException;
 import org.junit.Rule;
 import org.junit.Test;
+import uk.org.lidalia.slf4jtest.LoggingEvent;
+import uk.org.lidalia.slf4jtest.TestLogger;
+import uk.org.lidalia.slf4jtest.TestLoggerFactory;
+import uk.org.lidalia.slf4jtest.TestLoggerFactoryResetRule;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
-public class ArgumentsTest {
+public class ArgumentParserTest {
     private static final String PROGRAM_NAME = "progr";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    /** Logger of class under test. */
+    private static final TestLogger LOG = TestLoggerFactory.getTestLogger(ArgumentParser.class);
+
+    /** Rest logger before each test. **/
+    @Rule
+    public TestLoggerFactoryResetRule testLoggerFactoryResetRule = new TestLoggerFactoryResetRule();
 
     @Test
     public void read() throws Exception {
@@ -54,7 +67,7 @@ public class ArgumentsTest {
 
     @Test
     public void readNoMainArgs() throws Exception {
-        expectedException.expect(ParameterException.class);
+        expectedException.expect(ArgumentException.class);
         expectedException.expectMessage("Main parameters");
         read("");
     }
@@ -62,9 +75,19 @@ public class ArgumentsTest {
     @Test
     public void readHelp() throws Exception {
         assertTrue("Unexpected return on read()", read("input", "output", "--help").isHelp());
+        assertThat("Unexpected log message", getLogEvent(0).getMessage(), containsString("Usage"));
+        assertThat("Unexpected log message", getLogEvent(0).getMessage(), containsString(PROGRAM_NAME));
     }
 
     private Arguments read(String ... argv) {
-        return Arguments.read(argv, PROGRAM_NAME);
+        return ArgumentParser.read(argv, PROGRAM_NAME);
+    }
+
+    /**
+     * @return the logging event at <code>index</code>. Fails if not enough logging events present.
+     */
+    private LoggingEvent getLogEvent(int index) {
+        assertThat("Unexpected number of Log messages", LOG.getLoggingEvents().size(), greaterThan(index));
+        return LOG.getLoggingEvents().get(index);
     }
 }

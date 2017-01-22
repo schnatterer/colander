@@ -28,6 +28,7 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Summary;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,21 +43,19 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.AssertLambda.assertEmpty;
 import static org.junit.AssertLambda.assertOptional;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class ICalPipeTest {
+public class FilterChainTest {
 
     private VEventFilter passThroughFilter1 = mock(VEventFilter.class);
     private VEventFilter passThroughFilter2 = mock(VEventFilter.class);
-    private VEvent inputEvent = mock(VEvent.class);
+    private VEvent inputEvent = new VEvent();
 
     @Before
     public void setUp() {
         when(passThroughFilter1.apply(any(VEvent.class))).thenAnswer(new PassThroughAnswer());
         when(passThroughFilter2.apply(any(VEvent.class))).thenAnswer(new PassThroughAnswer());
+        inputEvent.getProperties().add(new Summary(""));
     }
 
     @Test

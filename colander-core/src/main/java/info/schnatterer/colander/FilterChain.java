@@ -112,7 +112,7 @@ public class FilterChain {
             if (returnedEvent.isPresent()) {
                 filteredEvent = returnedEvent.get();
             } else {
-                LOG.debug("Filter {} deleted originalEvent {}", filter, event);
+                LOG.debug("Filter {} deleted originalEvent {}", filter.getClass().getSimpleName(), event.getSummary());
                 return Optional.empty();
             }
         }

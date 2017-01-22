@@ -34,14 +34,21 @@
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- Don't show trace and debug on logcat -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%m%n</Pattern>
         </encoder>
     </appender>
 
-    <!-- TODO STDOUT should have info level should contain only logs from info.schnatterer.*-->
     <root level="TRACE">
         <appender-ref ref="fileAppender" />
         <appender-ref ref="STDOUT"/>
     </root>
+
+    <!-- Don't get too much protocol information from ics files. -->
+    <logger name="net.fortuna.ical4j" level="INFO" additivity="false"/>
+
 </configuration>

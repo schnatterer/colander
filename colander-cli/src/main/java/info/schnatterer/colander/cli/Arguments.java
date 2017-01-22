@@ -23,19 +23,27 @@
  */
 package info.schnatterer.colander.cli;
 
+import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.Parameter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Value object that holds the arguments passed to CLI.
  */
+// JCommander involves a lot of annotation magic, which leads to a lot of warnings which don't really apply here
+@SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Arguments {
 
     /** List of unnamed arguments.*/
     @Parameter(required = true, description = "<input.ics> [<output.ics]>")
     private List<String> mainArguments = new ArrayList<>();
+
+    @DynamicParameter(names = "--replace", description = "Replace <regex a>=<regex b>")
+    private Map<String, String> replace = new HashMap<>();
 
     @Parameter(names = "--help", help = true, description = "(optional) Show this message")
     private boolean help;
@@ -59,10 +67,17 @@ public class Arguments {
     }
 
     /**
-     * @return {@code true} when help paramter was passed. Otherwise {@code false}
+     * @return {@code true} when help argument was passed. Otherwise {@code false}
      */
     public boolean isHelp() {
         return help;
+    }
+
+    /**
+     * @return pairs of regexs to be replaced by each other. Replace key by value. Never {@code null}.
+     */
+    public Map<String, String> getReplace() {
+        return replace;
     }
 
     @Override
@@ -70,8 +85,8 @@ public class Arguments {
         return "Arguments{" +
             "help=" + help +
             ", mainArguments=" + mainArguments +
+            ", replace=" + replace +
             '}';
     }
-
 
 }

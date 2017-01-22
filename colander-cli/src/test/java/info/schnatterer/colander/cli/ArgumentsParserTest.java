@@ -32,8 +32,7 @@ import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 import uk.org.lidalia.slf4jtest.TestLoggerFactoryResetRule;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class ArgumentsParserTest {
@@ -62,6 +61,8 @@ public class ArgumentsParserTest {
         Arguments args = read("input");
 
         assertEquals("Input file", "input", args.getInputFile());
+        assertFalse("Help", args.isHelp());
+        assertTrue("Replace", args.getReplace().isEmpty());
         assertNull("Output file", args.getOutputFile());
     }
 
@@ -73,13 +74,21 @@ public class ArgumentsParserTest {
     }
 
     @Test
+    public void readReplace() throws Exception {
+        Arguments args = read("--replace a=b", "--replace \"\\r(?!\\n)=\\r\\n\"", "input", "output");
+        assertThat(args.getReplace(), hasEntry("a", "b"));
+        assertThat(args.getReplace(), hasEntry("\\r(?!\\n)", "\\r\\n"));
+        assertEquals("Unexpected amount of replace arguments", 2, args.getReplace().size());
+    }
+
+    @Test
     public void readHelp() throws Exception {
         assertTrue("Unexpected return on read()", read("input", "output", "--help").isHelp());
         assertThat("Unexpected log message", getLogEvent(0).getMessage(), containsString("Usage"));
         assertThat("Unexpected log message", getLogEvent(0).getMessage(), containsString(PROGRAM_NAME));
     }
 
-    private Arguments read(String ... argv) {
+    private Arguments read(String... argv) {
         return ArgumentsParser.read(argv, PROGRAM_NAME);
     }
 

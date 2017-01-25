@@ -32,6 +32,9 @@ import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 import uk.org.lidalia.slf4jtest.TestLoggerFactoryResetRule;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -54,15 +57,18 @@ public class ArgumentsParserTest {
 
         assertEquals("Input file", "input", args.getInputFile());
         assertEquals("Output file", "output", args.getOutputFile());
+
+        assertFalse("Help", args.isHelp());
+        assertFalse("Remove duplicates", args.isRemoveDuplicates());
+        assertFalse("Remove Empty", args.isRemoveEmpty());
+        assertTrue("Replace in summary", args.getReplaceInSummary().isEmpty());
+        assertTrue("Remove summary contains", args.getRemoveSummaryContains().isEmpty());
     }
 
     @Test
     public void readInputOnly() throws Exception {
         Arguments args = read("input");
-
         assertEquals("Input file", "input", args.getInputFile());
-        assertFalse("Help", args.isHelp());
-        assertTrue("Replace", args.getReplace().isEmpty());
         assertNull("Output file", args.getOutputFile());
     }
 
@@ -74,11 +80,35 @@ public class ArgumentsParserTest {
     }
 
     @Test
-    public void readReplace() throws Exception {
-        Arguments args = read("--replace a=b", "--replace \"\\r(?!\\n)=\\r\\n\"", "input", "output");
-        assertThat(args.getReplace(), hasEntry("a", "b"));
-        assertThat(args.getReplace(), hasEntry("\\r(?!\\n)", "\\r\\n"));
-        assertEquals("Unexpected amount of replace arguments", 2, args.getReplace().size());
+    public void readReplaceInSummary() throws Exception {
+        Map<String, String> replaceInSummary =
+            read("--replace-summary a=b", "--replace-summary", "\"\\r(?!\\n)=\\r\\n\"", "input", "output")
+                .getReplaceInSummary();
+        assertThat(replaceInSummary, hasEntry("a", "b"));
+        assertThat(replaceInSummary, hasEntry("\\r(?!\\n)", "\\r\\n"));
+        assertEquals("Unexpected amount of replace arguments", 2, replaceInSummary.size());
+    }
+
+    @Test
+    public void readRemoveSummaryContains() throws Exception {
+        List<String> removeSummaryContainsMultiple =
+            read("--remove-summary", "a", "--remove-summary", "\"b c\"", "input", "output").getRemoveSummaryContains();
+        List<String> removeSummaryContainsCommaSyntax =
+            read("--remove-summary", "\"a,b c\"", "input", "output").getRemoveSummaryContains();
+        assertThat(removeSummaryContainsMultiple, contains("a", "b c"));
+        assertEquals("Unexpected amount of replace arguments", 2, removeSummaryContainsMultiple.size());
+        assertEquals("Multiple parameter syntax and comma syntax are not the same", removeSummaryContainsCommaSyntax, removeSummaryContainsMultiple);
+    }
+
+    @Test
+    public void readRemoveDuplicates() {
+        Arguments read = read("--remove-duplicates", "input", "output");
+        assertTrue("Remove duplicates", read.isRemoveDuplicates());
+    }
+
+    @Test
+    public void readRemoveEmpty() {
+        assertTrue("Remove empty", read("--remove-empty", "input", "output").isRemoveEmpty());
     }
 
     @Test

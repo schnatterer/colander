@@ -35,15 +35,24 @@ import java.util.Map;
  * Value object that holds the arguments passed to CLI.
  */
 // JCommander involves a lot of annotation magic, which leads to a lot of warnings which don't really apply here
-@SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
+@SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
 public class Arguments {
 
     /** List of unnamed arguments.*/
     @Parameter(required = true, description = "<input.ics> [<output.ics]>")
     private List<String> mainArguments = new ArrayList<>();
 
-    @DynamicParameter(names = "--replace", description = "Replace <regex a>=<regex b>")
-    private Map<String, String> replace = new HashMap<>();
+    @DynamicParameter(names = "--replace-summary", description = "Replace in summary (regex)")
+    private Map<String, String> replaceInSummary = new HashMap<>();
+
+    @Parameter(names = "--remove-summary", description = "Remove when summary contains expression")
+    private List<String> removeSummaryContains = new ArrayList<>();
+
+    @Parameter(names = "--remove-duplicates", description = "Remove when summary, start date or end date are empty")
+    private boolean removeDuplicates = false;
+
+    @Parameter(names = "--remove-empty", description = "Remove when summary, start date or end date appear multiple times")
+    private boolean removeEmpty = false;
 
     @Parameter(names = "--help", help = true, description = "(optional) Show this message")
     private boolean help;
@@ -67,26 +76,39 @@ public class Arguments {
     }
 
     /**
-     * @return {@code true} when help argument was passed. Otherwise {@code false}
+     * @return pairs of regexes to be replaced by each other within the summary. Replace key by value. Never {@code null}.
      */
-    public boolean isHelp() {
-        return help;
-    }
+    public Map<String, String> getReplaceInSummary() { return replaceInSummary; }
 
     /**
-     * @return pairs of regexs to be replaced by each other. Replace key by value. Never {@code null}.
+     * @return the terms that when contained in summary, lead to removal.
      */
-    public Map<String, String> getReplace() {
-        return replace;
-    }
+    public List<String> getRemoveSummaryContains() { return removeSummaryContains; }
+
+    /**
+     * @return {@code true} when duplicates should be removed. Otherwise {@code false}.
+     */
+    public boolean isRemoveDuplicates() { return removeDuplicates; }
+
+    /**
+     * @return {@code true} when empty events should be removed. Otherwise {@code false}.
+     */
+    public boolean isRemoveEmpty() { return removeEmpty; }
+
+    /**
+     * @return {@code true} when help argument was passed. Otherwise {@code false}.
+     */
+    public boolean isHelp() { return help;  }
 
     @Override
     public String toString() {
         return "Arguments{" +
-            "help=" + help +
-            ", mainArguments=" + mainArguments +
-            ", replace=" + replace +
+            "mainArguments=" + mainArguments +
+            ", replaceInSummary=" + replaceInSummary +
+            ", removeSummaryContains=" + removeSummaryContains +
+            ", removeDuplicates=" + removeDuplicates +
+            ", removeEmpty=" + removeEmpty +
+            ", help=" + help +
             '}';
     }
-
 }

@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -79,22 +80,24 @@ class ColanderIO {
     /**
      * Writes a calender object to a file.
      *
-     * @param cal        the iCal to write
-     * @param outputPath the file to write the modified iCal file to. When {@code null}, a new filename is generated
-     *                   from {@code inputFilePath}.
+     * @param cal           the iCal to write
+     * @param outputPath    the file to write the modified iCal file to. When {@code null}, a new filename is generated
+     *                      from {@code inputFilePath}.
      * @param inputFilePath input file path. Only needed when output path is {@code null}.
-     * @throws FileNotFoundException   if the file exists but is a directory
-     *                                 rather than a regular file, does not exist but cannot
-     *                                 be created, or cannot be opened for any other reason
-     * @throws IOException             thrown when unable to write to output stream
-     * @throws ColanderParserException where calendar validation fails
+     * @throws FileNotFoundException      if the file exists but is a directory
+     *                                    rather than a regular file, does not exist but cannot
+     *                                    be created, or cannot be opened for any other reason
+     * @throws IOException                thrown when unable to write to output stream
+     * @throws ColanderParserException    where calendar validation fails
+     * @throws FileAlreadyExistsException if the file exists. Colander is not going to overwrite any files.
      */
     void write(Calendar cal, String outputPath, String inputFilePath) throws IOException {
-        // TODO write only if file not exists yet
-        
         String actualPath = outputPath;
         if (actualPath == null) {
             actualPath = generateOutputPath(inputFilePath);
+        }
+        if (new File(actualPath).exists()) {
+            throw new FileAlreadyExistsException(actualPath, null, "Not going to overwrite file silently.");
         }
         try (OutputStream outputStream = createOutputStream(actualPath)) {
             CalendarOutputter calendarOutputter = createCalendarOutputter();

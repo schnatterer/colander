@@ -160,6 +160,8 @@ public class Colander {
          *                                 be created, or cannot be opened for any other reason
          * @throws IOException             thrown when unable to write to output stream
          * @throws ColanderParserException where calendar validation fails
+         * @throws java.nio.file.FileAlreadyExistsException if the file exists. Colander is not going to overwrite any
+         * files.
          */
         public void toFile(String outputPath) throws IOException {
             write(result, outputPath, inputFilePath);

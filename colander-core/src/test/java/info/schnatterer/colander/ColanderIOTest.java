@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -87,10 +88,9 @@ public class ColanderIOTest {
 
     @Test
     public void write() throws Exception {
-        Calendar expectedCalendar = mock(Calendar.class);
         String expectedFile = "expectedFile";
 
-        io.write(expectedCalendar, expectedFile, null);
+        io.write(mock(Calendar.class), expectedFile, null);
         //calendarOutputter.output is final and cant be mocked. So assert something else
         assertNotEquals("write() did not write anything", 0,
             ((ByteArrayOutputStream) outStream).toByteArray().length);
@@ -98,21 +98,19 @@ public class ColanderIOTest {
 
     @Test
     public void writeValidationException() throws Exception {
-        Calendar expectedCalendar = mock(Calendar.class);
         String expectedFile = "expectedFile";
         outStream = mock(OutputStream.class, new ThrowValidationExceptionOnEachMethodCall());
         expectedException.expect(ColanderParserException.class);
 
         // Call method under test
-        io.write(expectedCalendar, expectedFile, null);
+        io.write(mock(Calendar.class), expectedFile, null);
         System.out.println(mockingDetails(outStream).getInvocations());
         verify(outStream, atLeastOnce()).close();
     }
 
     @Test
     public void writePathNull() throws Exception {
-        Calendar expectedCalendar = mock(Calendar.class);
-        io.write(expectedCalendar, null, "a/b.someEnding");
+        io.write(mock(Calendar.class), null, "a/b.someEnding");
 
         LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
         assertThat(outputPath, startsWith("a/b"));
@@ -132,6 +130,23 @@ public class ColanderIOTest {
         verifyDateInNewFileName(outputPath, dateBefore, "");
     }
 
+    @Test
+    public void writeFileExists() throws Exception {
+        expectedException.expect(FileAlreadyExistsException.class);
+
+        io.write(mock(Calendar.class),
+            // Just use this classes file to emulate an existing file
+            createPathToClassFile(),
+            null);
+    }
+
+    @Test
+    public void writeFileAllArgumentsNull() throws Exception {
+        expectedException.expect(ColanderParserException.class);
+        expectedException.expectMessage("th input and output file paths are null");
+        io.write(mock(Calendar.class), null, null);
+    }
+
     /**
      * Answer that makes mock throw an {@link ValidationException} on each method call.
      */
@@ -139,6 +154,11 @@ public class ColanderIOTest {
         public Object answer(InvocationOnMock invocation) throws Throwable {
             throw new ValidationException("Mocked Exception");
         }
+    }
+
+    private String createPathToClassFile() {
+        return getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+            + getClass().getName().replace(".", "/") + ".class";
     }
 
     private LocalDateTime createComparableDateNow(String format, DateTimeFormatter formatter) {

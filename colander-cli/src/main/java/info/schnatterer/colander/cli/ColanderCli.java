@@ -60,5 +60,10 @@ class ColanderCli {
     static void startColander(Arguments cliParams) {
         /* TODO Successfully read command line params, do something with it ...*/
         LOG.info("cliparams={}", cliParams);
+        /*catch (FileNotFoundException e) {
+            LOG.error("Unable to open file", e);
+        } catch (IOException e) {
+            LOG.error("Error writing new calendar file", e);
+        }*/
     }
 }

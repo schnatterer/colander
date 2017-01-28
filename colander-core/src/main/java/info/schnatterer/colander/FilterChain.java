@@ -23,9 +23,6 @@
  */
 package info.schnatterer.colander;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
@@ -34,18 +31,13 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Brings together multiple {@link VEventFilter}s and applies them to all events of an iCal file.
  */
-public class FilterChain {
+class FilterChain {
     static {
         CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
     }
@@ -60,31 +52,11 @@ public class FilterChain {
 
     /**
      * Applies all filters of the chain to an iCal file.
-     * @param inputFile the iCal file to parse
-     * @param outputFile the file to write the modified iCal file to
+     *
+     * @param cal the iCal to parse
+     * @return the modified iCal, never {@code null}
      */
-    public void run(File inputFile, File outputFile) throws IOException {
-        // Reading the file and creating the calendar
-        CalendarBuilder builder = new CalendarBuilder();
-
-        LOG.info("Reading calendar file...");
-
-        Calendar cal;
-        try {
-            cal = builder.build(new FileInputStream(inputFile));
-        } catch (ParserException e) {
-            throw new IOException(e);
-        }
-
-        Calendar outputCal = run(cal);
-        write(outputCal, outputFile);
-    }
-
-    /**
-     * Visible for testing
-     */
-    @SuppressWarnings("WeakerAccess")
-    protected Calendar run(Calendar cal) {
+    Calendar run(Calendar cal) {
         LOG.info("Start processing. Please wait...");
         // Create empty output calendar with same properties
         Calendar calOut = new Calendar(cal.getProperties(), new ComponentList<>());
@@ -117,17 +89,5 @@ public class FilterChain {
             }
         }
         return Optional.of(filteredEvent);
-    }
-
-    private void write(Calendar call, File outputFile) {
-        // write new calendar
-        try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
-            CalendarOutputter calendarOutputter = new CalendarOutputter();
-            calendarOutputter.output(call, fileOutputStream);
-        } catch (FileNotFoundException e) {
-            LOG.error("Unable to open file", e);
-        } catch (IOException e) {
-            LOG.error("Error writing new calendar file", e);
-        }
     }
 }

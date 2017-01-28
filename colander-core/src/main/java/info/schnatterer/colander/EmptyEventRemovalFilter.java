@@ -35,7 +35,7 @@ import java.util.Optional;
  *     <li>no end date.</li>
  * </ul>
  */
-public class EmptyEventRemovalFilter implements VEventFilter {
+class EmptyEventRemovalFilter implements VEventFilter {
 
     @Override
     public Optional<VEvent> apply(VEvent event) {

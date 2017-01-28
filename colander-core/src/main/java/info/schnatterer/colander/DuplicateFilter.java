@@ -33,9 +33,9 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Replaces all events that have the same summary, start and end date.
+ * Removes all events that have the same summary, start and end date.
  */
-public class DuplicateFilter implements VEventFilter {
+class DuplicateFilter implements VEventFilter {
 
     private Set<VEvent> filteredEvents = new HashSet<>();
 

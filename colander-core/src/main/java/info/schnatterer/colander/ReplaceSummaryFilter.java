@@ -30,11 +30,15 @@ import java.util.Optional;
 /**
  * Replaces regex in summary of an event.
  */
-public class ReplaceSummaryFilter implements VEventFilter {
+class ReplaceSummaryFilter implements VEventFilter {
 
     private final String stringToReplaceInSummary;
     private final String regex;
 
+    /**
+     * @param regex regex to match
+     * @param stringToReplaceInSummary regex to replace matching regex
+     */
     public ReplaceSummaryFilter(String regex, String stringToReplaceInSummary) {
         this.regex = regex;
         this.stringToReplaceInSummary = stringToReplaceInSummary;
@@ -47,4 +51,7 @@ public class ReplaceSummaryFilter implements VEventFilter {
         return Optional.of(event);
     }
 
+    public String getRegex() { return regex; }
+
+    public String getStringToReplaceInSummary() { return stringToReplaceInSummary; }
 }

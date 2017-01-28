@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- * <p>
+ *
  * Copyright (c) 2017 Johannes Schnatterer
- * <p>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * <p>
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * <p>
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,12 +32,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Handles in and output of calenders conveniently.
  */
 class ColanderIO {
     private static final Logger LOG = LoggerFactory.getLogger(ColanderIO.class);
+    static final String DATE_TIME_FORMAT_FILE_NAME = "yyyyMMddHHmmss";
 
     /**
      * Creates calendar object from an ical file from a create a calender object
@@ -77,16 +80,23 @@ class ColanderIO {
      * Writes a calender object to a file.
      *
      * @param cal        the iCal to write
-     * @param outputFile the file to write the modified iCal file to
+     * @param outputPath the file to write the modified iCal file to. When {@code null}, a new filename is generated
+     *                   from {@code inputFilePath}.
+     * @param inputFilePath input file path. Only needed when output path is {@code null}.
      * @throws FileNotFoundException   if the file exists but is a directory
      *                                 rather than a regular file, does not exist but cannot
      *                                 be created, or cannot be opened for any other reason
      * @throws IOException             thrown when unable to write to output stream
      * @throws ColanderParserException where calendar validation fails
      */
-    void write(Calendar cal, String outputFile) throws IOException {
-        // write new calendar
-        try (OutputStream outputStream = createOutputStream(outputFile)) {
+    void write(Calendar cal, String outputPath, String inputFilePath) throws IOException {
+        // TODO write only if file not exists yet
+        
+        String actualPath = outputPath;
+        if (actualPath == null) {
+            actualPath = generateOutputPath(inputFilePath);
+        }
+        try (OutputStream outputStream = createOutputStream(actualPath)) {
             CalendarOutputter calendarOutputter = createCalendarOutputter();
             try {
                 calendarOutputter.output(cal, outputStream);
@@ -94,6 +104,21 @@ class ColanderIO {
                 throw new ColanderParserException(e);
             }
         }
+    }
+
+    private String generateOutputPath(String inputFilePath) {
+        if (inputFilePath == null) {
+            throw new ColanderParserException("Both input and output file paths are null. Can't write result.");
+        }
+
+        int extensionSeparator = inputFilePath.lastIndexOf('.');
+        if (extensionSeparator < 0) {
+            extensionSeparator = inputFilePath.length();
+        }
+        return inputFilePath.substring(0, extensionSeparator)
+            + '-'
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_FILE_NAME))
+            + inputFilePath.substring(extensionSeparator);
     }
 
     /**

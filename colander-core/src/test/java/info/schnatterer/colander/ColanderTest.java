@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- * <p>
+ *
  * Copyright (c) 2017 Johannes Schnatterer
- * <p>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * <p>
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * <p>
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,15 +28,12 @@ import net.fortuna.ical4j.model.Calendar;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.isA;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -46,7 +43,6 @@ public class ColanderTest {
     private String expectedFilePath = "file";
     private FilterChain filterChain = mock(FilterChain.class);
     private Calendar cal = mock(Calendar.class);
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Colander.ColanderResult.DATE_TIME_FORMAT_FILE_NAME);
 
     @Test
     public void toss() throws Exception {
@@ -123,49 +119,11 @@ public class ColanderTest {
         assertSame(cal, colanderResult.writtenCal);
     }
 
-    @Test
-    public void rinseToFilePathNull() throws Exception {
-        ColanderResultForTest colanderResult = new ColanderResultForTest("a/b.someEnding", cal);
-
-        colanderResult.toFile(null);
-        LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
-        assertThat(colanderResult.writtenPath, startsWith("a/b"));
-        assertThat(colanderResult.writtenPath, endsWith(".someEnding"));
-
-        verifyDateInNewFileName(colanderResult.writtenPath, dateBefore, "\\.someEnding");
-    }
-
-    @Test
-    public void rinseToFilePathNullInputPathNoFileExtension() throws Exception {
-        ColanderResultForTest colanderResult = new ColanderResultForTest("a/b", cal);
-
-        colanderResult.toFile(null);
-        LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
-        assertThat(colanderResult.writtenPath, startsWith("a/b"));
-
-        verifyDateInNewFileName(colanderResult.writtenPath, dateBefore, "");
-    }
-
     private <T extends VEventFilter> List<T> getFiltersByClass(ColanderBuilder colanderBuilder, Class<T> clazz) {
         return colanderBuilder.filters.stream()
             .filter(clazz::isInstance)
             .map(clazz::cast)
             .collect(Collectors.toList());
-    }
-
-
-    private LocalDateTime createComparableDateNow(String format, DateTimeFormatter formatter) {
-        return LocalDateTime.parse(format, formatter);
-    }
-
-    private void verifyDateInNewFileName(String writtenPath, LocalDateTime dateBefore, String extension) {
-        Pattern pattern = Pattern.compile("a/b-(.*)" + extension);
-        Matcher matcher = pattern.matcher(writtenPath);
-        assertTrue("Date not found in new file name", matcher.find());
-        LocalDateTime newFileNameDate =
-            LocalDateTime.parse(matcher.group(1), formatter);
-        assertTrue("Date in new file name is unexpected. Expected equal or later than " + dateBefore + ", but was " + newFileNameDate,
-            newFileNameDate.isAfter(dateBefore) || newFileNameDate.isEqual(dateBefore));
     }
 
     private class ColanderBuilderForTest extends ColanderBuilder {
@@ -193,7 +151,7 @@ public class ColanderTest {
         }
 
         @Override
-        void write(Calendar result, String path) throws IOException {
+        void write(Calendar result, String path, String inputPath) throws IOException {
             writtenCal = result;
             writtenPath = path;
         }

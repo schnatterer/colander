@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- * <p>
+ *
  * Copyright (c) 2017 Johannes Schnatterer
- * <p>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * <p>
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * <p>
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@ package info.schnatterer.colander;
 import net.fortuna.ical4j.model.Calendar;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,7 +141,6 @@ public class Colander {
      * Representation of rinsed calender, ready for further processing.
      */
     public static class ColanderResult {
-        public static final String DATE_TIME_FORMAT_FILE_NAME = "yyyyMMddHHmmss";
         private final Calendar result;
         private final String inputFilePath;
 
@@ -155,7 +152,7 @@ public class Colander {
         /**
          * Write rinsed calender to ical file
          *
-         * @param path the path to the ical file. When {@code null}, a new filename is generated from
+         * @param outputPath the path to the ical file. When {@code null}, a new filename is generated from
          * {@link #inputFilePath}.
          *
          * @throws java.io.FileNotFoundException   if the file exists but is a directory
@@ -164,24 +161,8 @@ public class Colander {
          * @throws IOException             thrown when unable to write to output stream
          * @throws ColanderParserException where calendar validation fails
          */
-        public void toFile(String path) throws IOException {
-            String actualPath = path;
-            if (actualPath == null) {
-                actualPath = generateOutputPath(inputFilePath);
-            }
-            // TODO write only if file not exists yet
-            write(result, actualPath);
-        }
-
-        private String generateOutputPath(String inputFilePath) {
-            int extensionSeparator = inputFilePath.lastIndexOf('.');
-            if (extensionSeparator < 0) {
-                extensionSeparator = inputFilePath.length();
-            }
-            return inputFilePath.substring(0, extensionSeparator)
-                + '-'
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_FILE_NAME))
-                + inputFilePath.substring(extensionSeparator);
+        public void toFile(String outputPath) throws IOException {
+            write(result, outputPath, inputFilePath);
         }
 
         /**
@@ -194,8 +175,8 @@ public class Colander {
         /**
          * Visible for testing.
          */
-        void write(Calendar result, String path) throws IOException {
-            new ColanderIO().write(result, path);
+        void write(Calendar result, String outputPath, String inputFilePath) throws IOException {
+            new ColanderIO().write(result, outputPath, inputFilePath);
         }
     }
 }

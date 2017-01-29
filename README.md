@@ -8,8 +8,8 @@
 [![License](https://img.shields.io/github/license/schnatterer/colander.svg)](LICENSE)
 [<img alt="powered by openshift" align="right" src="https://www.openshift.com/images/logos/powered_by_openshift.png"/>](https://www.openshift.com/)
 
-Colander filters ICS files. It can either be used as standalone application via [command line interface](#CLI) or within 
-JVM applications using the [API](#API). 
+Colander filters ICS files. It can either be used as standalone application via [command line interface](#cli) or within 
+JVM applications using the [API](#api). 
 
 # CLI
 
@@ -35,14 +35,14 @@ JVM applications using the [API](#API).
         Replace in summary (regex)
         Syntax: --replace-summarykey=value
         Default: {}
-
 ```
-* Note that the order of the arguments/filters is not maintained. That is, they are not applied in the order as passed
-to the CLI.
+
 * Example 
 ```
 colander --remove-summary "Remove, RemoveIncludingLeadingSpace" --remove-summary "Another One to remove" --replace-summary "\r(?!\\n)=\r\n" cal.ics cal-new.ics
 ```
+* Note that the order of the arguments/filters is not maintained. That is, they are not applied in the order as passed
+to the CLI.
 * If no `output.ics` file is passed, colander creates one, basing on the file name.
 * Colander never overwrites existing files. If the `output.ics` exists, colander fails.
 

@@ -121,7 +121,7 @@ def mvn(def args) {
 
     // Advice: don't define M2_HOME in general. Maven will autodetect its root fine.
     withEnv(["JAVA_HOME=${javaHome}", "PATH+MAVEN=${mvnHome}/bin:${env.JAVA_HOME}/bin"]) {
-        sh "${mvnHome}/bin/mvn ${args} --batch-mode -V -U -e -Dsurefire.useFile=false --settings ${env.HOME}/.m2/settings.xml ${args}"
+        sh "${mvnHome}/bin/mvn --batch-mode -V -U -e -Dsurefire.useFile=false --settings ${env.HOME}/.m2/settings.xml ${args}"
     }
 }
 

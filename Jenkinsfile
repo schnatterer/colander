@@ -65,19 +65,24 @@ node { // No specific label
             archive '**/target/*.jar,**/target/*.zip'
         }
 
-        stage('Unit Test') {
-            // Archive JUnit results using special step for pipeline plugin
-            mvn 'test'
-            // Archive JUnit results, if any
-            junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
-        }
-
-        stage('Integration Test') {
-            // Archive JUnit results using special step for pipeline plugin
-            mvn 'verify -DskipUnitTests'
-            // Archive JUnit results, if any
-            junit allowEmptyResults: true, testResults: '**/target/failsafe-reports/TEST-*.xml'
-        }
+        parallel(
+            unitTests: {
+                stage('Unit Test') {
+                    // Archive JUnit results using special step for pipeline plugin
+                    mvn 'test'
+                    // Archive JUnit results, if any
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
+                }
+            },
+            integrationTests: {
+                stage('Integration Test') {
+                    // Archive JUnit results using special step for pipeline plugin
+                    mvn 'verify -DskipUnitTests'
+                    // Archive JUnit results, if any
+                    junit allowEmptyResults: true, testResults: '**/target/failsafe-reports/TEST-*.xml'
+                }
+            }
+        )
 
         stage('SonarQube') {
             //withSonarQubeEnv(sonarQubeVersion) {

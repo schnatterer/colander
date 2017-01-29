@@ -68,18 +68,12 @@ node { // No specific label
         parallel(
             unitTests: {
                 stage('Unit Test') {
-                    // Archive JUnit results using special step for pipeline plugin
                     mvn 'test'
-                    // Archive JUnit results, if any
-                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
                 }
             },
             integrationTests: {
                 stage('Integration Test') {
-                    // Archive JUnit results using special step for pipeline plugin
                     mvn 'verify -DskipUnitTests'
-                    // Archive JUnit results, if any
-                    junit allowEmptyResults: true, testResults: '**/target/failsafe-reports/TEST-*.xml'
                 }
             }
         )
@@ -102,6 +96,9 @@ node { // No specific label
             }
         }
     }
+
+    // Archive Unit and integration test results, if any
+    junit allowEmptyResults: true, testResults: '**/target/failsafe-reports/TEST-*.xml,**/target/surefire-reports/TEST-*.xml'
 
     // email on fail
     step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailRecipients, sendToIndividuals: true])

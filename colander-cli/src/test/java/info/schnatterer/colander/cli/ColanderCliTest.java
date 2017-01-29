@@ -23,22 +23,103 @@
  */
 package info.schnatterer.colander.cli;
 
+import info.schnatterer.colander.Colander;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.mock;
+import java.util.Arrays;
+import java.util.HashMap;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class ColanderCliTest {
 
-    private Arguments args = mock(Arguments.class);
+    @Spy
+    private ColanderCli cli;
 
-    // TODO how to assert colander was not called?
-    /*@Test
-    public void help() {
-        ColanderCli.main(new String[]{"--help"});
-    }*/
+    @Mock
+    private Colander.ColanderBuilder builder;
+
+    @Mock
+    private Colander.ColanderResult result;
+
+    @Mock
+    private Arguments args;
+
+    @Before
+    public void before() throws Exception {
+        doReturn(builder).when(cli).createColanderBuilder(any());
+        when(builder.rinse()).thenReturn(result);
+    }
+
+    @Test
+    public void execute() throws Exception {
+        assertEquals("Exit status", ExitStatus.SUCCESS, execute("a/b.ical"));
+    }
+
+    @Test
+    public void executeHelp() throws Exception {
+        assertEquals("Exit status", ExitStatus.SUCCESS, execute("--help"));
+        verifyZeroInteractions(builder, result);
+    }
+
+    @Test
+    public void executeErrorArgs() throws Exception {
+        assertEquals("Exit status", ExitStatus.ERROR_ARGS, execute("--wtf"));
+    }
+
+    @Test
+    public void executeErrorParsing() throws Exception {
+        when(builder.rinse()).thenThrow(new RuntimeException("Mocked exception"));
+        assertEquals("Exit status", ExitStatus.ERROR_PARSING, execute("a/b.ical"));
+    }
 
     @Test
     public void startColander() throws Exception {
-        ColanderCli.startColander(args);
+        String expectedInput = "in";
+        String expectedOutput = "out";
+        when(args.getInputFile()).thenReturn(expectedInput);
+        when(args.getOutputFile()).thenReturn(expectedOutput);
+        when(args.isRemoveDuplicates()).thenReturn(true);
+        when(args.isRemoveEmpty()).thenReturn(true);
+        when(args.getRemoveSummaryContains()).thenReturn(Arrays.asList("y", "z"));
+        when(args.getReplaceInSummary()).thenReturn(new HashMap<String, String>() {{
+                put("a", "b");
+                put("c", "d");
+            }});
+
+        assertEquals("Exit status", ExitStatus.SUCCESS, cli.startColander(args));
+
+        verify(cli).createColanderBuilder(expectedInput);
+        verify(builder).removeDuplicates();
+        verify(builder).removeEmptyEvents();
+        verify(builder).replaceInSummary("a", "b");
+        verify(builder).replaceInSummary("c", "d");
+        verify(builder).removeSummaryContains("y");
+        verify(builder).removeSummaryContains("z");
+        verify(result).toFile(expectedOutput);
     }
+
+    @Test
+    public void startColanderEmptyArgs() throws Exception {
+        assertEquals("Exit status", ExitStatus.SUCCESS, cli.startColander(args));
+
+        verify(cli).createColanderBuilder(null);
+        verify(builder, never()).removeDuplicates();
+        verify(builder, never()).removeEmptyEvents();
+        verify(builder, never()).replaceInSummary(anyString(), anyString());
+        verify(builder, never()).removeSummaryContains(anyString());
+        verify(result).toFile(null);
+    }
+
+    private ExitStatus execute(String... args) {
+        return cli.execute(args);
+    }
+
 }

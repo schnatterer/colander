@@ -23,6 +23,7 @@
  */
 package info.schnatterer.colander.cli;
 
+import info.schnatterer.colander.Colander;
 import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,36 +35,75 @@ class ColanderCli {
     private static final String PROGRAM_NAME = "colander";
     private static final Logger LOG = LoggerFactory.getLogger(ColanderCli.class);
 
-    /** Main class should not be instantiated */
+    /**
+     * Main class should not be instantiated directly, only via {@link #main(String[])}.
+     * Visible for testing.
+     */
     ColanderCli() {
     }
 
     /**
      * Entry point of the application
+     *
      * @param args arguments passed via CLI
      */
-    @SuppressWarnings("squid:S1166") // Exceptions are logged in ArgumentsParser by contract.
     public static void main(String[] args) {
-    /* Parse command line arguments/parameter (command line interface) */
-        Arguments cliParams = null;
+        System.exit(new ColanderCli().execute(args).getExitStatus());
+    }
+
+    /**
+     * Parses {@code args} and starts {@link Colander}.
+     *
+     * @param args comand line args to parse.
+     * @return an exit status to be returned to CLI.
+     */
+    @SuppressWarnings("squid:S1166") // Exceptions are logged in ArgumentsParser by contract.
+    ExitStatus execute(String[] args) {
+        Arguments cliParams;
         try {
             cliParams = ArgumentsParser.read(args, PROGRAM_NAME);
         } catch (ArgumentException e) {
-            System.exit(-1);
+            return ExitStatus.ERROR_ARGS;
         }
 
         if (!cliParams.isHelp()) {
-            startColander(cliParams);
+            return startColander(cliParams);
         }
+        return ExitStatus.SUCCESS;
     }
 
-    static void startColander(Arguments cliParams) {
-        /* TODO Successfully read command line params, do something with it ...*/
-        LOG.info("cliparams={}", cliParams);
-        /*catch (FileNotFoundException e) {
-            LOG.error("Unable to open file", e);
-        } catch (IOException e) {
-            LOG.error("Error writing new calendar file", e);
-        }*/
+    /**
+     * Converts an {@link Arguments} object to a {@link Colander} and rinses.
+     *
+     * @param args comand line args to parse.
+     * @return an exit status to be returned to CLI.
+     */
+    ExitStatus startColander(Arguments args) {
+        LOG.debug("CLI arguments={}", args);
+        Colander.ColanderBuilder colander = createColanderBuilder(args.getInputFile());
+        if (args.isRemoveDuplicates()) {
+            colander.removeDuplicates();
+        }
+        if (args.isRemoveEmpty()) {
+            colander.removeEmptyEvents();
+        }
+        args.getReplaceInSummary().forEach(colander::replaceInSummary);
+        args.getRemoveSummaryContains().forEach(colander::removeSummaryContains);
+
+        try {
+            colander.rinse().toFile(args.getOutputFile());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            LOG.debug("Error while parsing or writing calender", e);
+            return ExitStatus.ERROR_PARSING;
+        }
+        return ExitStatus.SUCCESS;
+    }
+
+    /**
+     * Visible for testing
+     */
+    Colander.ColanderBuilder createColanderBuilder(String inputFile) {
+        return Colander.toss(inputFile);
     }
 }

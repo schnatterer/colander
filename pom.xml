@@ -122,9 +122,16 @@
                 <version>${jacoco.version}</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <phase>initialize</phase>
                         <goals>
                             <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>prepare-agent-integration</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
                             <goal>prepare-agent-integration</goal>
                         </goals>
                     </execution>

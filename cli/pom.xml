@@ -36,7 +36,7 @@
     </parent>
 
     <artifactId>colander-cli</artifactId>
-    <name>colander-cli</name>
+    <name>cli</name>
 
     <packaging>jar</packaging>
 

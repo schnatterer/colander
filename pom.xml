@@ -46,8 +46,8 @@
     </properties>
 
     <modules>
-        <module>colander-core</module>
-        <module>colander-cli</module>
+        <module>core</module>
+        <module>cli</module>
     </modules>
 
     <dependencyManagement>

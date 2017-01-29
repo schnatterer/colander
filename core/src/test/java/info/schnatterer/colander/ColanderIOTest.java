@@ -122,9 +122,10 @@ public class ColanderIOTest {
     @Test
     public void writePathNullInputPathNoFileExtension() throws Exception {
         Calendar expectedCalendar = mock(Calendar.class);
+        LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
+
         io.write(expectedCalendar, null, "a/b");
 
-        LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
         assertThat(outputPath, startsWith("a/b"));
 
         verifyDateInNewFileName(outputPath, dateBefore, "");

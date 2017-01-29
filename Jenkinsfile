@@ -65,15 +65,21 @@ node { // No specific label
             archive '**/target/*.jar,**/target/*.zip'
         }
 
-        stage('Test') {
+        stage('Unit Test') {
             // Archive JUnit results using special step for pipeline plugin
             mvn 'test'
             // Archive JUnit results, if any
             junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
         }
 
-        stage('SonarQube') {
+        stage('Integration Test') {
+            // Archive JUnit results using special step for pipeline plugin
+            mvn 'verify -DskipUnitTests'
+            // Archive JUnit results, if any
+            junit allowEmptyResults: true, testResults: '**/target/failsafe-reports/TEST-*.xml'
+        }
 
+        stage('SonarQube') {
             //withSonarQubeEnv(sonarQubeVersion) {
             // Results in this error https://issues.jenkins-ci.org/browse/JENKINS-39346
             // mvn "$SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL",

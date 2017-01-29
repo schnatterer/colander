@@ -43,8 +43,9 @@ colander --remove-summary "Remove, RemoveIncludingLeadingSpace" --remove-summary
 ```
 * Note that the order of the arguments/filters is not maintained. That is, they are not applied in the order as passed
 to the CLI.
-* If no `output.ics` file is passed, colander creates one, basing on the file name.
+* If no `output.ics` file is passed, colander creates one, basing on the file name and the current timestamp, e.g. `input-20170129194742.ics`.
 * Colander never overwrites existing files. If the `output.ics` exists, colander fails.
+* If you care about return codes, they can be found here: [ExitStatus](cli/src/main/java/info/schnatterer/colander/cli/ExitStatus.java))
 
 # API
 

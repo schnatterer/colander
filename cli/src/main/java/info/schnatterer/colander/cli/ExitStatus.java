@@ -27,8 +27,11 @@ package info.schnatterer.colander.cli;
  * Exit status of Colander CLI.
  */
 enum ExitStatus {
+    /** Successfully parsed calendar and wrote result. */
     SUCCESS(0),
+    /** Invalid command line arguments. */
     ERROR_ARGS(-1),
+    /** Error parsing input ICS or writing output. */
     ERROR_PARSING(-2);
 
     final int numericStatus;

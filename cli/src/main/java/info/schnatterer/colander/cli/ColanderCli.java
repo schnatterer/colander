@@ -93,8 +93,7 @@ class ColanderCli {
         try {
             colander.rinse().toFile(args.getOutputFile());
         } catch (Exception e) {
-            LOG.error(e.getMessage());
-            LOG.debug("Error while parsing or writing calender", e);
+            LOG.error("Error while parsing or writing calender: " + e.getMessage(), e);
             return ExitStatus.ERROR_PARSING;
         }
         return ExitStatus.SUCCESS;

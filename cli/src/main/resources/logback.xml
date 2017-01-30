@@ -24,6 +24,7 @@
     SOFTWARE.
 
 -->
+
 <configuration>
     <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
         <file>colander.log</file>
@@ -39,12 +40,13 @@
             <level>INFO</level>
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%m%n</Pattern>
+            <!-- Log only message and line break, don't log any stracktraces to console  -->
+            <Pattern>%m%n%nopex</Pattern>
         </encoder>
     </appender>
 
     <root level="TRACE">
-        <appender-ref ref="fileAppender" />
+        <appender-ref ref="fileAppender"/>
         <appender-ref ref="STDOUT"/>
     </root>
 

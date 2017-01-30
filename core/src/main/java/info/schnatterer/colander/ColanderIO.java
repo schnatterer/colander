@@ -97,8 +97,9 @@ class ColanderIO {
             actualPath = generateOutputPath(inputFilePath);
         }
         if (new File(actualPath).exists()) {
-            throw new FileAlreadyExistsException(actualPath, null, "Not going to overwrite file silently.");
+            throw new FileAlreadyExistsException(actualPath, null, "File already exists. Not going to overwrite it.");
         }
+        LOG.info("Writing output to {}", actualPath);
         try (OutputStream outputStream = createOutputStream(actualPath)) {
             CalendarOutputter calendarOutputter = createCalendarOutputter();
             try {

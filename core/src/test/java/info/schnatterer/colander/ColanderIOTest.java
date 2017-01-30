@@ -110,9 +110,9 @@ public class ColanderIOTest {
 
     @Test
     public void writePathNull() throws Exception {
+        LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
         io.write(mock(Calendar.class), null, "a/b.someEnding");
 
-        LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
         assertThat(outputPath, startsWith("a/b"));
         assertThat(outputPath, endsWith(".someEnding"));
 

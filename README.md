@@ -46,6 +46,7 @@ to the CLI.
 * If no `output.ics` file is passed, colander creates one, basing on the file name and the current timestamp, e.g. `input-20170129194742.ics`.
 * Colander never overwrites existing files. If the `output.ics` exists, colander fails.
 * If you care about return codes, they can be found here: [ExitStatus](cli/src/main/java/info/schnatterer/colander/cli/ExitStatus.java))
+* Another example is the integration test for CLI (see [ColanderCliITCase](cli/src/test/java/info/schnatterer/colander/cli/ColanderCliITCase.java)). 
 
 # API
 
@@ -96,5 +97,5 @@ Calendar cal = Colander.toss("/some/input.ics")
 
 More examples can be found in the 
 * CLI module (see [ColanderCli](cli/src/main/java/info/schnatterer/colander/cli/ColanderCli.java)) and
-* integration test (see [ColanderITCase](core/src/test/java/info/schnatterer/colander/ColanderITCase.java))
+* integration test for core (see [ColanderITCase](core/src/test/java/info/schnatterer/colander/ColanderITCase.java))
 

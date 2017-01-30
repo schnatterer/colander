@@ -61,17 +61,17 @@
 
         <!-- test -->
         <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>colander-test-lib</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>colander-test-lib</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
     </dependencies>
 </project>

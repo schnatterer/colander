@@ -63,10 +63,26 @@
             <version>1.60</version>
         </dependency>
 
+        <!-- test -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>colander-test-lib</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>uk.org.lidalia</groupId>
             <artifactId>slf4j-test</artifactId>
             <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <!-- Allow for dealing with System.exit in integration test -->
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.16.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

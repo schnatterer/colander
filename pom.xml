@@ -38,6 +38,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <main.basedir>${project.basedir}</main.basedir>
         <!-- Pass "-DskipUnitTests" in order to skip only unit tests without skipping integration tests. -->
         <skipUnitTests>${skipTests}</skipUnitTests>

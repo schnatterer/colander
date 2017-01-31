@@ -65,18 +65,15 @@ node { // No specific label
             archive '**/target/*.jar,**/target/*.zip'
         }
 
-        parallel(
-            unitTests: {
-                stage('Unit Test') {
-                    mvn 'test'
-                }
-            },
-            integrationTests: {
-                stage('Integration Test') {
-                    mvn 'verify -DskipUnitTests'
-                }
+        parallel unitTests: {
+            stage('Unit Test') {
+                mvn 'test'
             }
-        )
+        }, integrationTests: {
+            stage('Integration Test') {
+                mvn 'verify -DskipUnitTests'
+            }
+        }, failFast: true
 
         stage('SonarQube') {
             //withSonarQubeEnv(sonarQubeVersion) {

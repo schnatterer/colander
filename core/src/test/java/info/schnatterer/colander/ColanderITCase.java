@@ -48,7 +48,8 @@ public class ColanderITCase {
             .removeDuplicates()
             .removeEmptyEvents()
             .removeSummaryContains("Remove me")
-            .replaceInSummary("\\r(?!\\n)", "\\r\\n")
+            .replaceInDescription("L.ne", "Line")
+            .replaceInSummary("Replace", "Replace!")
             .filter(Optional::of)
             .rinse()
             .toFile(outputPath);

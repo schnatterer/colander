@@ -57,7 +57,8 @@ public class ColanderCliITCase {
             "--remove-duplicates",
             "--remove-empty",
             "--remove-summary", "Remove me",
-            "--replace-summary \\r(?!\\n)=\\r\\n",
+            "--replace-description L.ne=Line",
+            "--replace-summary Replace=Replace!",
             ITCases.getFilePathTestIcs(folder),
             outputPath
         );

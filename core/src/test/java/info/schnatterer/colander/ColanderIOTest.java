@@ -80,9 +80,11 @@ public class ColanderIOTest {
 
     @Test
     public void readException() throws Exception {
-        when(builder.build(any(InputStream.class))).thenThrow(ParserException.class);
+        ParserException expectedException = new ParserException("mocked exception message", 42);
+        when(builder.build(any(InputStream.class))).thenThrow(expectedException);
 
-        expectedException.expect(ColanderParserException.class);
+        this.expectedException.expect(ColanderParserException.class);
+        this.expectedException.expectMessage(expectedException.getMessage());
         io.read(mock(InputStream.class));
     }
 
@@ -99,8 +101,10 @@ public class ColanderIOTest {
     @Test
     public void writeValidationException() throws Exception {
         String expectedFile = "expectedFile";
-        outStream = mock(OutputStream.class, new ThrowValidationExceptionOnEachMethodCall());
+        String expectedMessage = "mocked exception message";
+        outStream = mock(OutputStream.class, new ThrowValidationExceptionOnEachMethodCall(expectedMessage));
         expectedException.expect(ColanderParserException.class);
+        expectedException.expectMessage(expectedMessage);
 
         // Call method under test
         io.write(mock(Calendar.class), expectedFile, null);
@@ -152,8 +156,14 @@ public class ColanderIOTest {
      * Answer that makes mock throw an {@link ValidationException} on each method call.
      */
     private static class ThrowValidationExceptionOnEachMethodCall implements Answer {
+        String message;
+
+        ThrowValidationExceptionOnEachMethodCall(String message) {
+            this.message = message;
+        }
+
         public Object answer(InvocationOnMock invocation) throws Throwable {
-            throw new ValidationException("Mocked Exception");
+            throw new ValidationException(message);
         }
     }
 

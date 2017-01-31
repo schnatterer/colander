@@ -45,6 +45,9 @@ public class Arguments {
     @DynamicParameter(names = "--replace-summary", description = "Replace in summary (regex)")
     private Map<String, String> replaceInSummary = new HashMap<>();
 
+    @DynamicParameter(names = "--replace-description", description = "Replace in description (regex)")
+    private Map<String, String> replaceInDescription = new HashMap<>();
+
     @Parameter(names = "--remove-summary", description = "Remove when summary contains expression")
     private List<String> removeSummaryContains = new ArrayList<>();
 
@@ -81,6 +84,11 @@ public class Arguments {
     public Map<String, String> getReplaceInSummary() { return replaceInSummary; }
 
     /**
+     * @return pairs of regexes to be replaced by each other within the description. Replace key by value. Never {@code null}.
+     */
+    public Map<String,String> getReplaceInDescription() { return replaceInDescription; }
+
+    /**
      * @return the terms that when contained in summary, lead to removal.
      */
     public List<String> getRemoveSummaryContains() { return removeSummaryContains; }
@@ -111,4 +119,5 @@ public class Arguments {
             ", help=" + help +
             '}';
     }
+
 }

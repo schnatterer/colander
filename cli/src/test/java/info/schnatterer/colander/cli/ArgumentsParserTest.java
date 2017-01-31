@@ -90,6 +90,16 @@ public class ArgumentsParserTest {
     }
 
     @Test
+    public void readReplaceInDescription() throws Exception {
+        Map<String, String> replaceInDescription =
+            read("--replace-description a=b", "--replace-description", "\"\\r(?!\\n)=\\r\\n\"", "input", "output")
+                .getReplaceInDescription();
+        assertThat(replaceInDescription, hasEntry("a", "b"));
+        assertThat(replaceInDescription, hasEntry("\\r(?!\\n)", "\\r\\n"));
+        assertEquals("Unexpected amount of replace arguments", 2, replaceInDescription.size());
+    }
+
+    @Test
     public void readRemoveSummaryContains() throws Exception {
         List<String> removeSummaryContainsMultiple =
             read("--remove-summary", "a", "--remove-summary", "\"b c\"", "input", "output").getRemoveSummaryContains();

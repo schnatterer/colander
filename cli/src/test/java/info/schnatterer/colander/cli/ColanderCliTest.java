@@ -93,6 +93,10 @@ public class ColanderCliTest {
                 put("a", "b");
                 put("c", "d");
             }});
+        when(args.getReplaceInDescription()).thenReturn(new HashMap<String, String>() {{
+                put("1", "2");
+                put("3", "4");
+            }});
 
         assertEquals("Exit status", ExitStatus.SUCCESS, cli.startColander(args));
 
@@ -101,6 +105,8 @@ public class ColanderCliTest {
         verify(builder).removeEmptyEvents();
         verify(builder).replaceInSummary("a", "b");
         verify(builder).replaceInSummary("c", "d");
+        verify(builder).replaceInDescription("1", "2");
+        verify(builder).replaceInDescription("3", "4");
         verify(builder).removeSummaryContains("y");
         verify(builder).removeSummaryContains("z");
         verify(result).toFile(expectedOutput);

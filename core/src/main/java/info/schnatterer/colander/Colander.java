@@ -24,6 +24,7 @@
 package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Property;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,7 +101,19 @@ public class Colander {
          * @return a reference to this object.
          */
         public ColanderBuilder replaceInSummary(String regex, String stringToReplaceInSummary) {
-            filters.add(new ReplaceSummaryFilter(regex, stringToReplaceInSummary));
+            filters.add(new ReplaceFilter(regex, stringToReplaceInSummary, Property.SUMMARY));
+            return this;
+        }
+
+        /**
+         * Replaces regex in description of an event.
+         *
+         * @param regex                    regex to match
+         * @param stringToReplaceInSummary regex to replace matching regex
+         * @return a reference to this object.
+         */
+        public ColanderBuilder replaceInDescription(String regex, String stringToReplaceInSummary) {
+            filters.add(new ReplaceFilter(regex, stringToReplaceInSummary, Property.DESCRIPTION));
             return this;
         }
 

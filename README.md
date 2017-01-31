@@ -31,6 +31,10 @@ JVM applications using the [API](#api).
       --remove-summary
         Remove when summary contains expression
         Default: []
+      --replace-description
+        Replace in description (regex)
+        Syntax: --replace-descriptionkey=value
+        Default: {}
       --replace-summary
         Replace in summary (regex)
         Syntax: --replace-summarykey=value
@@ -39,7 +43,7 @@ JVM applications using the [API](#api).
 
 * Example 
 ```
-colander --remove-summary "Remove, RemoveIncludingLeadingSpace" --remove-summary "Another One to remove" --replace-summary "\r(?!\\n)=\r\n" cal.ics cal-new.ics
+colander --remove-summary "Remove, RemoveIncludingLeadingSpace" --remove-summary "Another One to remove" --replace-summary "l.ne=line" cal.ics cal-new.ics
 ```
 * Note that the order of the arguments/filters is not maintained. That is, they are not applied in the order as passed
 to the CLI.
@@ -79,7 +83,8 @@ Then add the actual dependency
 ```java
 Colander.toss("/some/input.ics")
     .removeSummaryContains("Birthday")
-    .replaceInSummary("\\r(?!\\n)", "\\r\\n")
+    .replaceInSummary("Replace", "Replace!")
+    .replaceInDescription("L.ne", "Line")
     .removeEmptyEvents()
     .removeDuplicates()
     .addFilter(event -> {

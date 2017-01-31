@@ -66,12 +66,25 @@ public class ColanderTest {
     @Test
     public void replaceInSummary() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).replaceInSummary("a", "b");
-        List<ReplaceSummaryFilter> replaceFilters = getFiltersByClass(colanderBuilder, ReplaceSummaryFilter.class);
+        List<ReplaceFilter> replaceFilters = getFiltersByClass(colanderBuilder, ReplaceFilter.class);
         assertEquals("Unexpected amount of filters found", 1, replaceFilters.size());
         replaceFilters.forEach(
             filter -> {
                 assertEquals("Unexpected regex", "a", filter.getRegex());
-                assertEquals("Unexpected stringToReplaceInSummary", "b", filter.getStringToReplaceInSummary());
+                assertEquals("Unexpected stringToReplaceInSummary", "b", filter.getStringToReplace());
+            }
+        );
+    }
+
+    @Test
+    public void replaceInDescription() throws Exception {
+        ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).replaceInDescription("a", "b");
+        List<ReplaceFilter> replaceFilters = getFiltersByClass(colanderBuilder, ReplaceFilter.class);
+        assertEquals("Unexpected amount of filters found", 1, replaceFilters.size());
+        replaceFilters.forEach(
+            filter -> {
+                assertEquals("Unexpected regex", "a", filter.getRegex());
+                assertEquals("Unexpected stringToReplaceInSummary", "b", filter.getStringToReplace());
             }
         );
     }
@@ -108,7 +121,7 @@ public class ColanderTest {
             .removeDuplicates();
         Iterator<VEventFilter> filters = colanderBuilder.filters.iterator();
         assertTrue("Unexpected order", filters.next() instanceof SummaryEventRemoverFilter);
-        assertTrue("Unexpected order", filters.next() instanceof ReplaceSummaryFilter);
+        assertTrue("Unexpected order", filters.next() instanceof ReplaceFilter);
         assertTrue("Unexpected order", filters.next() instanceof EmptyEventRemovalFilter);
         assertTrue("Unexpected order", filters.next() instanceof DuplicateFilter);
     }

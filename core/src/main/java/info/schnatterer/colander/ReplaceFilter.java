@@ -23,35 +23,58 @@
  */
 package info.schnatterer.colander;
 
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.Optional;
 
 /**
- * Replaces regex in summary of an event.
+ * Replaces regex in a {@link Property}of an event.
  */
-class ReplaceSummaryFilter implements VEventFilter {
+class ReplaceFilter implements VEventFilter {
 
-    private final String stringToReplaceInSummary;
+    private final String stringToReplace;
     private final String regex;
+    private final String propertyName;
 
     /**
      * @param regex regex to match
-     * @param stringToReplaceInSummary regex to replace matching regex
+     * @param stringToReplace regex to replace matching regex
+     * @param propertyName the event property to replace
      */
-    public ReplaceSummaryFilter(String regex, String stringToReplaceInSummary) {
+    public ReplaceFilter(String regex, String stringToReplace, String propertyName) {
         this.regex = regex;
-        this.stringToReplaceInSummary = stringToReplaceInSummary;
+        this.stringToReplace = stringToReplace;
+        this.propertyName = propertyName;
     }
 
     @Override
     public Optional<VEvent> apply(VEvent event) {
-        String value = event.getSummary().getValue();
-        event.getSummary().setValue(value.replaceAll(regex, stringToReplaceInSummary));
+        try {
+            replace(event.getProperty(propertyName));
+        } catch (IOException | URISyntaxException | ParseException e) {
+            throw new ColanderParserException(e);
+        }
         return Optional.of(event);
+    }
+
+    /**
+     * Visible for testing.
+     */
+    void replace(Property property) throws IOException, URISyntaxException, ParseException {
+        if (property == null) {
+            return;
+        }
+        String value = property.getValue();
+        if (value != null) {
+            property.setValue(value.replaceAll(regex, stringToReplace));
+        }
     }
 
     public String getRegex() { return regex; }
 
-    public String getStringToReplaceInSummary() { return stringToReplaceInSummary; }
+    public String getStringToReplace() { return stringToReplace; }
 }

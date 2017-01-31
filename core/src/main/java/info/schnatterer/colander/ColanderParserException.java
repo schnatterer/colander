@@ -38,7 +38,8 @@ public class ColanderParserException extends RuntimeException {
      *              (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
     ColanderParserException(Throwable cause) {
-        super(cause);
+        // Don't class name of cause in message, as we don't want to see it on the CLI.
+        super(cause.getMessage(), cause);
     }
 
     /**

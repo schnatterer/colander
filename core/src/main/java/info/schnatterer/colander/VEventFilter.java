@@ -37,6 +37,7 @@ public interface VEventFilter {
      *
      * @param event subject to be filtered
      * @return an event to be passed to next apply.
+     * @throws ColanderParserException if anything goes wrong
      */
     Optional<VEvent> apply(VEvent event);
 }

@@ -64,9 +64,10 @@ public class ITCases {
         assertEquals("Number of components", 2, events.size());
         findEventBySummary(events, "Duplicate");
         VEvent replacedEvent = findEventBySummary(events, "Replace");
-        // TODO expect \r to be replaced by \r\n
-        assertEquals("Replaced event description", "First Line\\rSecondLine",
+        assertEquals("Replaced event description", "FirstLine\nSecondLine\nThirdLine\n",
             replacedEvent.getDescription().getValue());
+        assertEquals("Replaced event summary", "Replace!",
+            replacedEvent.getSummary().getValue());
     }
 
     /**

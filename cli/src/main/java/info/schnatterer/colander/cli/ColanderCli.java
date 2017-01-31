@@ -88,6 +88,7 @@ class ColanderCli {
             colander.removeEmptyEvents();
         }
         args.getReplaceInSummary().forEach(colander::replaceInSummary);
+        args.getReplaceInDescription().forEach(colander::replaceInDescription);
         args.getRemoveSummaryContains().forEach(colander::removeSummaryContains);
 
         try {

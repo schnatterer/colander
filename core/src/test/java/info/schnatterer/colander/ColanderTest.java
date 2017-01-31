@@ -25,16 +25,18 @@ package info.schnatterer.colander;
 
 import info.schnatterer.colander.Colander.ColanderBuilder;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VEvent;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.isA;
-import static org.junit.Assert.*;
+import static org.junit.AssertLambda.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -81,6 +83,19 @@ public class ColanderTest {
         assertEquals("Unexpected amount of filters found", 1, removeSummaryFilters.size());
         removeSummaryFilters.forEach(
             filter -> assertEquals("Unexpected summaryContainsString", "str", filter.getSummaryContainsString())
+        );
+    }
+
+    @Test
+    public void filter() throws Exception {
+        ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).filter(event -> Optional.empty());
+        List<VEventFilter> allFilters = getFiltersByClass(colanderBuilder, VEventFilter.class);
+        assertEquals("Unexpected amount of filters found", 1, allFilters.size());
+        allFilters.forEach(
+            filter -> {
+                VEvent event = mock(VEvent.class);
+                assertEmpty("Filter returned unexpected value.", filter.apply(event));
+            }
         );
     }
 

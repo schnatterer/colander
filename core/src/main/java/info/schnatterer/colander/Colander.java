@@ -105,6 +105,17 @@ public class Colander {
         }
 
         /**
+         * Adds a custom filter to colander.
+         *
+         * @param filter the event filter
+         * @return a reference to this object.
+         */
+        public ColanderBuilder filter(VEventFilter filter) {
+            filters.add(filter);
+            return this;
+        }
+
+        /**
          * Rinses colander's input, i.e. applies the filters to.
          * Terminates {@link ColanderBuilder} and returns a {@link ColanderResult} that allows further processing.
          *

@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
@@ -48,6 +49,7 @@ public class ColanderITCase {
             .removeEmptyEvents()
             .removeSummaryContains("Remove me")
             .replaceInSummary("\\r(?!\\n)", "\\r\\n")
+            .filter(Optional::of)
             .rinse()
             .toFile(outputPath);
         assertTrue("Output not written", new File(outputPath).exists());

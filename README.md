@@ -82,6 +82,10 @@ Colander.toss("/some/input.ics")
     .replaceInSummary("\\r(?!\\n)", "\\r\\n")
     .removeEmptyEvents()
     .removeDuplicates()
+    .addFilter(event -> {
+        System.out.println(event.toString());
+        return Optional.of(event);
+        })
     .rinse()
     .toFile("/some/output.ics");
 ```

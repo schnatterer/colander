@@ -44,7 +44,8 @@ public class ColanderITCase {
     @Test
     public void endToEnd() throws Exception {
         String outputPath = folder.getRoot().toString() + "/out.ics";
-        Colander.toss(ITCases.getFilePathTestIcs(folder))
+        String inputPath = ITCases.getFilePathTestIcs(folder);
+        Colander.toss(inputPath)
             .removeDuplicates()
             .removeEmptyEvents()
             .removeSummaryContains("Remove me")
@@ -54,6 +55,6 @@ public class ColanderITCase {
             .rinse()
             .toFile(outputPath);
         assertTrue("Output not written", new File(outputPath).exists());
-        ITCases.verifyParsedIcs(outputPath);
+        ITCases.verifyParsedIcs(inputPath, outputPath);
     }
 }

@@ -26,12 +26,14 @@ package info.schnatterer.colander.test;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -56,9 +58,10 @@ public class ITCases {
      * Verifies that a parsed ICS is as expected.
      */
     @SuppressWarnings("squid:S1160") // This is a test-lib. Don't try to win a trophy for its design.
-    public static void verifyParsedIcs(String outputPath) throws IOException, ParserException {
-        Calendar cal = new CalendarBuilder().build(new FileInputStream(outputPath));
-        List<VEvent> events = cal.getComponents("VEVENT").stream()
+    public static void verifyParsedIcs(String inputPath, String outputPath) throws IOException, ParserException {
+        Calendar inCal = new CalendarBuilder().build(new FileInputStream(outputPath));
+        Calendar outCal = new CalendarBuilder().build(new FileInputStream(outputPath));
+        List<VEvent> events = outCal.getComponents("VEVENT").stream()
             .map(component -> (VEvent) component)
             .collect(Collectors.toList());
         assertEquals("Number of components", 2, events.size());
@@ -68,6 +71,11 @@ public class ITCases {
             replacedEvent.getDescription().getValue());
         assertEquals("Replaced event summary", "Replace!",
             replacedEvent.getSummary().getValue());
+
+        // Assert other components were copied untouched
+        Set<CalendarComponent> expectedOtherComponents = getNonEventComponents(inCal);
+        Set<CalendarComponent> actualOtherComponents = getNonEventComponents(outCal);
+        assertEquals("Non-event calender component from input missing in output calender", expectedOtherComponents, actualOtherComponents);
     }
 
     /**
@@ -97,4 +105,11 @@ public class ITCases {
             return buffer.lines().collect(Collectors.joining("\n"));
         }
     }
+
+    private static Set<CalendarComponent> getNonEventComponents(Calendar cal) {
+        return cal.getComponents().stream()
+            .filter(calendarComponent -> !"VEVENT".equals(calendarComponent.getName()))
+            .collect(Collectors.toSet());
+    }
+
 }

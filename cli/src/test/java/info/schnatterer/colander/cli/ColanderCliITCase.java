@@ -47,11 +47,12 @@ public class ColanderCliITCase {
 
     @Test
     public void endToEnd() throws Exception {
+        String inputPath = ITCases.getFilePathTestIcs(folder);
         String outputPath = folder.getRoot().toString() + "/out.ics";
         exit.expectSystemExitWithStatus(0);
         exit.checkAssertionAfterwards(() -> {
             assertTrue("Output not written", new File(outputPath).exists());
-            ITCases.verifyParsedIcs(outputPath);
+            ITCases.verifyParsedIcs(inputPath, outputPath);
         });
         execute(
             "--remove-duplicates",
@@ -59,7 +60,7 @@ public class ColanderCliITCase {
             "--remove-summary", "Remove me",
             "--replace-description L.ne=Line",
             "--replace-summary Replace=Replace!",
-            ITCases.getFilePathTestIcs(folder),
+            inputPath,
             outputPath
         );
     }

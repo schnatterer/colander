@@ -39,7 +39,8 @@ public class ITCasesTest {
     @Test
     public void verifyParsedIcs() throws Exception {
         // No exception means success
-        ITCases.verifyParsedIcs(ITCases.getFilePathTestIcs(ICS_FILE_EXPECTED, folder));
+        ITCases.verifyParsedIcs(ITCases.getFilePathTestIcs(folder),
+            ITCases.getFilePathTestIcs(ICS_FILE_EXPECTED, folder));
     }
 
     @Test

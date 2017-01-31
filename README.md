@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/github/license/schnatterer/colander.svg)](LICENSE)
 [<img alt="powered by openshift" align="right" src="https://www.openshift.com/images/logos/powered_by_openshift.png"/>](https://www.openshift.com/)
 
-Colander filters ICS files. It can either be used as standalone application via [command line interface](#cli) or within 
+Colander filters calender events in ICS files. It can either be used as standalone application via [command line interface](#cli) or within 
 JVM applications using the [API](#api). 
 
 # CLI

@@ -61,14 +61,19 @@ class FilterChain {
         // Create empty output calendar with same properties
         Calendar calOut = new Calendar(cal.getProperties(), new ComponentList<>());
 
-        ComponentList<CalendarComponent> events = cal.getComponents("VEVENT");
-        for (CalendarComponent calendarComponent : events) {
-            filterEvent((VEvent) calendarComponent).ifPresent(calOut.getComponents()::add);
+        ComponentList<CalendarComponent> allComponents = cal.getComponents();
+        for (CalendarComponent component : allComponents) {
+            if ("VEVENT".equals(component.getName())) {
+                filterEvent((VEvent) component).ifPresent(calOut.getComponents()::add);
+            } else {
+                // Just pipe other components through
+                calOut.getComponents().add(component);
+            }
         }
         // TODO count amount of filtered classes per apply (using BaseFilter class?)
-        LOG.info("Number of records processed: {}", events.size());
+        LOG.info("Number of records processed: {}", allComponents.size());
         LOG.info("Number of records in new calendar: {}", calOut.getComponents().size());
-        LOG.info("Number of records deleted: {}", events.size() - calOut.getComponents().size());
+        LOG.info("Number of records deleted: {}", allComponents.size() - calOut.getComponents().size());
 
         return calOut;
     }

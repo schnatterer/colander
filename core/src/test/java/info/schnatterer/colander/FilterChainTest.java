@@ -26,8 +26,7 @@ package info.schnatterer.colander;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.*;
 import net.fortuna.ical4j.model.property.Summary;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,6 +35,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
@@ -64,9 +64,12 @@ public class FilterChainTest {
 
         VEvent event1 = new VEvent(new Date(), "event1");
         VEvent event2 = new VEvent(new Date(), "event2");
+        List<CalendarComponent> otherComponents = Arrays.asList(new VToDo(), new VTimeZone(), new VAlarm(), new VFreeBusy(),
+            new VAvailability(), new VVenue(), new VJournal(), new XComponent("xcomp"));
         Calendar inputCalender = new Calendar(new ComponentList<CalendarComponent>() {{
             add(event1);
             add(event2);
+            addAll(otherComponents);
         }});
 
         Calendar outputCalendar = pipe.run(inputCalender);
@@ -76,6 +79,7 @@ public class FilterChainTest {
         verify(passThroughFilter2).apply(event2);
         assertTrue("Event 1 not in output calender", outputCalendar.getComponents().contains(event1));
         assertTrue("Event 2 not in output calender", outputCalendar.getComponents().contains(event2));
+        otherComponents.forEach( calendarComponent -> outputCalendar.getComponents().contains(calendarComponent));
     }
 
     @Test

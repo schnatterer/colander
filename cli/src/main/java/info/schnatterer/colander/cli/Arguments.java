@@ -113,6 +113,7 @@ public class Arguments {
         return "Arguments{" +
             "mainArguments=" + mainArguments +
             ", replaceInSummary=" + replaceInSummary +
+            ", replaceInDescription=" + replaceInDescription +
             ", removeSummaryContains=" + removeSummaryContains +
             ", removeDuplicates=" + removeDuplicates +
             ", removeEmpty=" + removeEmpty +

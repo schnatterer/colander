@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2017 Johannes Schnatterer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,6 +24,7 @@
 package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Summary;
 
 import java.util.Optional;
 
@@ -42,12 +43,19 @@ class SummaryEventRemoverFilter implements VEventFilter {
 
     @Override
     public Optional<VEvent> apply(VEvent event) {
-        if (event.getSummary().getValue().contains(summaryContainsString)) {
+        if (contains(event)) {
             return Optional.empty();
         } else {
             return Optional.of(event);
         }
     }
 
-    public String getSummaryContainsString() { return summaryContainsString; }
+    private boolean contains(VEvent event) {
+        Summary summary = event.getSummary();
+        return !(summary == null || summary.getValue() == null) && summary.getValue().contains(summaryContainsString);
+    }
+
+    public String getSummaryContainsString() {
+        return summaryContainsString;
+    }
 }

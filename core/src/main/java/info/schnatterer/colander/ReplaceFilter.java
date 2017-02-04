@@ -34,7 +34,7 @@ import java.util.Optional;
 /**
  * Replaces regex in a {@link Property} of a calender component.
  */
-class ReplaceFilter implements ColanderFilter {
+public class ReplaceFilter implements ColanderFilter {
 
     private final String stringToReplace;
     private final String regex;
@@ -77,4 +77,6 @@ class ReplaceFilter implements ColanderFilter {
     public String getRegex() { return regex; }
 
     public String getStringToReplace() { return stringToReplace; }
+
+    public String getPropertyName() { return propertyName; }
 }

@@ -62,7 +62,7 @@ public class Colander {
          *
          * @return a reference to this object.
          */
-        public ColanderBuilder removeDuplicates() {
+        public ColanderBuilder removeDuplicateEvents() {
             filters.add(new DuplicateEventFilter());
             return this;
         }
@@ -83,26 +83,49 @@ public class Colander {
         }
 
         /**
-         * Removes event, when its summery contains a specific string.
+         * Removes a calender component, when one of its properties contains a specific string.
          *
-         * @param summaryContainsString remove summary when it contains this string
+         * @param propertyName property to search
+         * @param summaryContainsString remove when summary contains this string
          * @return a reference to this object.
          */
-        public ColanderBuilder removeSummaryContains(String summaryContainsString) {
-            filters.add(new RemoveFilter(summaryContainsString, Property.SUMMARY));
+        public ColanderBuilder removePropertyContains(String propertyName, String summaryContainsString) {
+            filters.add(new RemoveFilter(summaryContainsString, propertyName));
             return this;
         }
 
         /**
-         * Replaces regex in summary of an event.
+         * Removes a calender component, when its summary contains a specific string.
+         *
+         * @param summaryContainsString remove when summary contains this string
+         * @return a reference to this object.
+         */
+        public ColanderBuilder removeSummaryContains(String summaryContainsString) {
+            return removePropertyContains(Property.SUMMARY, summaryContainsString);
+        }
+
+        /**
+         * Replaces regex in a calender component's property (e.g. summary, description, ..)
+         *
+         * @param propertyName property to search
+         * @param regex                    regex to match
+         * @param stringToReplaceInSummary regex to replace matching regex
+         * @return a reference to this object.
+         */
+        public ColanderBuilder replaceInProperty(String propertyName, String regex, String stringToReplaceInSummary) {
+            filters.add(new ReplaceFilter(regex, stringToReplaceInSummary, propertyName));
+            return this;
+        }
+
+        /**
+         * Replaces regex in summary of a calender component.
          *
          * @param regex                    regex to match
          * @param stringToReplaceInSummary regex to replace matching regex
          * @return a reference to this object.
          */
         public ColanderBuilder replaceInSummary(String regex, String stringToReplaceInSummary) {
-            filters.add(new ReplaceFilter(regex, stringToReplaceInSummary, Property.SUMMARY));
-            return this;
+            return replaceInProperty(Property.SUMMARY, regex, stringToReplaceInSummary);
         }
 
         /**
@@ -113,8 +136,7 @@ public class Colander {
          * @return a reference to this object.
          */
         public ColanderBuilder replaceInDescription(String regex, String stringToReplaceInSummary) {
-            filters.add(new ReplaceFilter(regex, stringToReplaceInSummary, Property.DESCRIPTION));
-            return this;
+            return replaceInProperty(Property.DESCRIPTION, regex, stringToReplaceInSummary);
         }
 
         /**

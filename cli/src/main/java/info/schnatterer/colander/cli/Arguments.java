@@ -52,10 +52,10 @@ public class Arguments {
     private List<String> removeSummaryContains = new ArrayList<>();
 
     @Parameter(names = "--remove-duplicate-events", description = "Remove event when summary, start date or end date appear multiple times")
-    private boolean removeDuplicates = false;
+    private boolean removeDuplicateEvents = false;
 
     @Parameter(names = "--remove-empty-events", description = "Remove events when summary, start date or end date are empty")
-    private boolean removeEmpty = false;
+    private boolean removeEmptyEvents = false;
 
     @Parameter(names = "--help", help = true, description = "(optional) Show this message")
     private boolean help;
@@ -96,12 +96,12 @@ public class Arguments {
     /**
      * @return {@code true} when duplicates should be removed. Otherwise {@code false}.
      */
-    public boolean isRemoveDuplicates() { return removeDuplicates; }
+    public boolean isRemoveDuplicateEvents() { return removeDuplicateEvents; }
 
     /**
      * @return {@code true} when empty events should be removed. Otherwise {@code false}.
      */
-    public boolean isRemoveEmpty() { return removeEmpty; }
+    public boolean isRemoveEmptyEvents() { return removeEmptyEvents; }
 
     /**
      * @return {@code true} when help argument was passed. Otherwise {@code false}.
@@ -115,8 +115,8 @@ public class Arguments {
             ", replaceInSummary=" + replaceInSummary +
             ", replaceInDescription=" + replaceInDescription +
             ", removeSummaryContains=" + removeSummaryContains +
-            ", removeDuplicates=" + removeDuplicates +
-            ", removeEmpty=" + removeEmpty +
+            ", removeDuplicateEvents=" + removeDuplicateEvents +
+            ", removeEmptyEvents=" + removeEmptyEvents +
             ", help=" + help +
             '}';
     }

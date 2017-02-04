@@ -81,10 +81,10 @@ class ColanderCli {
     ExitStatus startColander(Arguments args) {
         LOG.debug("CLI arguments={}", args);
         Colander.ColanderBuilder colander = createColanderBuilder(args.getInputFile());
-        if (args.isRemoveDuplicates()) {
-            colander.removeDuplicates();
+        if (args.isRemoveDuplicateEvents()) {
+            colander.removeDuplicateEvents();
         }
-        if (args.isRemoveEmpty()) {
+        if (args.isRemoveEmptyEvents()) {
             colander.removeEmptyEvents();
         }
         args.getReplaceInSummary().forEach(colander::replaceInSummary);

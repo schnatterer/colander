@@ -25,6 +25,7 @@ package info.schnatterer.colander;
 
 import info.schnatterer.colander.Colander.ColanderBuilder;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import org.junit.Test;
 
@@ -53,7 +54,7 @@ public class ColanderTest {
 
     @Test
     public void removeDuplicates() throws Exception {
-        ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeDuplicates();
+        ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeDuplicateEvents();
         assertThat(colanderBuilder.filters, hasItem(isA(DuplicateEventFilter.class)));
     }
 
@@ -64,12 +65,29 @@ public class ColanderTest {
     }
 
     @Test
+    public void replaceInProperty() throws Exception {
+        String expectedProperty = "some property name";
+        ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath)
+            .replaceInProperty(expectedProperty, "a", "b");
+        List<ReplaceFilter> replaceFilters = getFiltersByClass(colanderBuilder, ReplaceFilter.class);
+        assertEquals("Unexpected amount of filters found", 1, replaceFilters.size());
+        replaceFilters.forEach(
+            filter -> {
+                assertEquals("Unexpected regex", expectedProperty, filter.getPropertyName());
+                assertEquals("Unexpected regex", "a", filter.getRegex());
+                assertEquals("Unexpected stringToReplaceInSummary", "b", filter.getStringToReplace());
+            }
+        );
+    }
+
+    @Test
     public void replaceInSummary() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).replaceInSummary("a", "b");
         List<ReplaceFilter> replaceFilters = getFiltersByClass(colanderBuilder, ReplaceFilter.class);
         assertEquals("Unexpected amount of filters found", 1, replaceFilters.size());
         replaceFilters.forEach(
             filter -> {
+                assertEquals("Unexpected regex", Property.SUMMARY, filter.getPropertyName());
                 assertEquals("Unexpected regex", "a", filter.getRegex());
                 assertEquals("Unexpected stringToReplaceInSummary", "b", filter.getStringToReplace());
             }
@@ -83,8 +101,23 @@ public class ColanderTest {
         assertEquals("Unexpected amount of filters found", 1, replaceFilters.size());
         replaceFilters.forEach(
             filter -> {
+                assertEquals("Unexpected regex", Property.DESCRIPTION, filter.getPropertyName());
                 assertEquals("Unexpected regex", "a", filter.getRegex());
                 assertEquals("Unexpected stringToReplaceInSummary", "b", filter.getStringToReplace());
+            }
+        );
+    }
+
+    @Test
+    public void removePropertyContains() throws Exception {
+        String expectedProperty = "some property name";
+        ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removePropertyContains(expectedProperty, "str");
+        List<RemoveFilter> removeSummaryFilters = getFiltersByClass(colanderBuilder, RemoveFilter.class);
+        assertEquals("Unexpected amount of filters found", 1, removeSummaryFilters.size());
+        removeSummaryFilters.forEach(
+            filter -> {
+                assertEquals("Unexpected regex", expectedProperty, filter.getPropertyName());
+                assertEquals("Unexpected summaryContainsString", "str", filter.getSummaryContainsString());
             }
         );
     }
@@ -95,7 +128,10 @@ public class ColanderTest {
         List<RemoveFilter> removeSummaryFilters = getFiltersByClass(colanderBuilder, RemoveFilter.class);
         assertEquals("Unexpected amount of filters found", 1, removeSummaryFilters.size());
         removeSummaryFilters.forEach(
-            filter -> assertEquals("Unexpected summaryContainsString", "str", filter.getSummaryContainsString())
+            filter -> {
+                assertEquals("Unexpected regex", Property.SUMMARY, filter.getPropertyName());
+                assertEquals("Unexpected summaryContainsString", "str", filter.getSummaryContainsString());
+            }
         );
     }
 
@@ -118,7 +154,7 @@ public class ColanderTest {
             .removeSummaryContains("str")
             .replaceInSummary("a", "b")
             .removeEmptyEvents()
-            .removeDuplicates();
+            .removeDuplicateEvents();
         Iterator<ColanderFilter> filters = colanderBuilder.filters.iterator();
         assertTrue("Unexpected order", filters.next() instanceof RemoveFilter);
         assertTrue("Unexpected order", filters.next() instanceof ReplaceFilter);

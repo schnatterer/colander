@@ -86,8 +86,8 @@ public class ColanderCliTest {
         String expectedOutput = "out";
         when(args.getInputFile()).thenReturn(expectedInput);
         when(args.getOutputFile()).thenReturn(expectedOutput);
-        when(args.isRemoveDuplicates()).thenReturn(true);
-        when(args.isRemoveEmpty()).thenReturn(true);
+        when(args.isRemoveDuplicateEvents()).thenReturn(true);
+        when(args.isRemoveEmptyEvents()).thenReturn(true);
         when(args.getRemoveSummaryContains()).thenReturn(Arrays.asList("y", "z"));
         when(args.getReplaceInSummary()).thenReturn(new HashMap<String, String>() {{
                 put("a", "b");
@@ -101,7 +101,7 @@ public class ColanderCliTest {
         assertEquals("Exit status", ExitStatus.SUCCESS, cli.startColander(args));
 
         verify(cli).createColanderBuilder(expectedInput);
-        verify(builder).removeDuplicates();
+        verify(builder).removeDuplicateEvents();
         verify(builder).removeEmptyEvents();
         verify(builder).replaceInSummary("a", "b");
         verify(builder).replaceInSummary("c", "d");
@@ -117,7 +117,7 @@ public class ColanderCliTest {
         assertEquals("Exit status", ExitStatus.SUCCESS, cli.startColander(args));
 
         verify(cli).createColanderBuilder(null);
-        verify(builder, never()).removeDuplicates();
+        verify(builder, never()).removeDuplicateEvents();
         verify(builder, never()).removeEmptyEvents();
         verify(builder, never()).replaceInSummary(anyString(), anyString());
         verify(builder, never()).removeSummaryContains(anyString());

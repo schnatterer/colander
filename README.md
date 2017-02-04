@@ -85,12 +85,14 @@ Then add the actual dependency
 
 ```java
 Colander.toss("/some/input.ics")
-    .removeSummaryContains("Birthday")
-    .replaceInSummary("Replace", "Replace!")
-    .replaceInDescription("L.ne", "Line")
+    .removeDuplicateEvents()
     .removeEmptyEvents()
-    .removeDuplicates()
-    .addFilter(event -> {
+    .removePropertyContains(Property.SUMMARY, "Remove me")
+    // Generic replace in property
+    .replaceInProperty(Property.DESCRIPTION, "L.ne", "Line")
+    // Convenience: replace in property summary
+    .replaceInSummary("Replace", "Replace!")
+    .filter(event -> {
         System.out.println(event.toString());
         return Optional.of(event);
         })

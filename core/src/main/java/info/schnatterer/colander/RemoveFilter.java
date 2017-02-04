@@ -31,7 +31,7 @@ import java.util.Optional;
 /**
  * Removes calender component, when one of its properties contains a specific string.
  */
-class RemoveFilter implements ColanderFilter {
+public class RemoveFilter implements ColanderFilter {
     private String summaryContainsString;
     private final String propertyName;
 
@@ -61,4 +61,5 @@ class RemoveFilter implements ColanderFilter {
         return summaryContainsString;
     }
 
+    public String getPropertyName() { return propertyName; }
 }

@@ -59,8 +59,8 @@ public class ArgumentsParserTest {
         assertEquals("Output file", "output", args.getOutputFile());
 
         assertFalse("Help", args.isHelp());
-        assertFalse("Remove duplicates", args.isRemoveDuplicates());
-        assertFalse("Remove Empty", args.isRemoveEmpty());
+        assertFalse("Remove duplicates", args.isRemoveDuplicateEvents());
+        assertFalse("Remove Empty", args.isRemoveEmptyEvents());
         assertTrue("Replace in summary", args.getReplaceInSummary().isEmpty());
         assertTrue("Remove summary contains", args.getRemoveSummaryContains().isEmpty());
     }
@@ -113,12 +113,12 @@ public class ArgumentsParserTest {
     @Test
     public void readRemoveDuplicates() {
         Arguments read = read("--remove-duplicate-events", "input", "output");
-        assertTrue("Remove duplicates", read.isRemoveDuplicates());
+        assertTrue("Remove duplicates", read.isRemoveDuplicateEvents());
     }
 
     @Test
     public void readRemoveEmpty() {
-        assertTrue("Remove empty", read("--remove-empty-events", "input", "output").isRemoveEmpty());
+        assertTrue("Remove empty", read("--remove-empty-events", "input", "output").isRemoveEmptyEvents());
     }
 
     @Test

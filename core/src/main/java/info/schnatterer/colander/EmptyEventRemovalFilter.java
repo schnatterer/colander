@@ -36,7 +36,7 @@ import java.util.Optional;
  *     <li>no end date.</li>
  * </ul>
  */
-class EmptyEventRemovalFilter extends TypedColanderFilter<VEvent> {
+public class EmptyEventRemovalFilter extends TypedColanderFilter<VEvent> {
 
     @Override
     protected Optional<CalendarComponent> applyTyped(VEvent event) {

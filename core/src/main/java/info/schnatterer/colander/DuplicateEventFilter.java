@@ -36,7 +36,7 @@ import java.util.Set;
 /**
  * Removes all events that have the same summary, start and end date.
  */
-class DuplicateEventFilter extends TypedColanderFilter<VEvent>{
+public class DuplicateEventFilter extends TypedColanderFilter<VEvent>{
 
     private Set<VEvent> filteredEvents = new HashSet<>();
 

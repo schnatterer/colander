@@ -92,7 +92,7 @@ public class ColanderTest {
     @Test
     public void removeSummaryContains() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeSummaryContains("str");
-        List<SummaryEventRemoverFilter> removeSummaryFilters = getFiltersByClass(colanderBuilder, SummaryEventRemoverFilter.class);
+        List<RemoveFilter> removeSummaryFilters = getFiltersByClass(colanderBuilder, RemoveFilter.class);
         assertEquals("Unexpected amount of filters found", 1, removeSummaryFilters.size());
         removeSummaryFilters.forEach(
             filter -> assertEquals("Unexpected summaryContainsString", "str", filter.getSummaryContainsString())
@@ -120,7 +120,7 @@ public class ColanderTest {
             .removeEmptyEvents()
             .removeDuplicates();
         Iterator<ColanderFilter> filters = colanderBuilder.filters.iterator();
-        assertTrue("Unexpected order", filters.next() instanceof SummaryEventRemoverFilter);
+        assertTrue("Unexpected order", filters.next() instanceof RemoveFilter);
         assertTrue("Unexpected order", filters.next() instanceof ReplaceFilter);
         assertTrue("Unexpected order", filters.next() instanceof EmptyEventRemovalFilter);
         assertTrue("Unexpected order", filters.next() instanceof DuplicateEventFilter);

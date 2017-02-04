@@ -35,7 +35,7 @@ public interface ColanderFilter {
     /**
      * Filters a calendar component.
      *
-     * @param component subject to be filtered
+     * @param component subject to be filtered. Never {@code null}!
      * @return a calendar component to be passed to next filter or {@link Optional#empty()} if the component should be
      * removed.
      * @throws ColanderParserException if anything goes wrong

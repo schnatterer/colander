@@ -89,7 +89,7 @@ public class Colander {
          * @return a reference to this object.
          */
         public ColanderBuilder removeSummaryContains(String summaryContainsString) {
-            filters.add(new SummaryEventRemoverFilter(summaryContainsString));
+            filters.add(new RemoveFilter(summaryContainsString, Property.SUMMARY));
             return this;
         }
 

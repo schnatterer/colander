@@ -23,41 +23,42 @@
  */
 package info.schnatterer.colander;
 
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Summary;
 
 import java.util.Optional;
 
 /**
- * Removes event, when its summary contains a specific string.
+ * Removes calender component, when one of its properties contains a specific string.
  */
-// TODO generalize to ColanderFilter
-class SummaryEventRemoverFilter extends TypedColanderFilter<VEvent> {
+class RemoveFilter implements ColanderFilter {
     private String summaryContainsString;
+    private final String propertyName;
 
     /**
      * @param summaryContainsString remove summary when it contains this string
+     * @param propertyName          the event property to replace
      */
-    public SummaryEventRemoverFilter(String summaryContainsString) {
+    public RemoveFilter(String summaryContainsString, String propertyName) {
         this.summaryContainsString = summaryContainsString;
+        this.propertyName = propertyName;
     }
 
     @Override
-    protected Optional<CalendarComponent> applyTyped(VEvent event) {
-        if (contains(event)) {
+    public Optional<CalendarComponent> apply(CalendarComponent component) {
+        if (contains(component.getProperty(propertyName))) {
             return Optional.empty();
         } else {
-            return Optional.of(event);
+            return Optional.of(component);
         }
     }
 
-    private boolean contains(VEvent event) {
-        Summary summary = event.getSummary();
-        return !(summary == null || summary.getValue() == null) && summary.getValue().contains(summaryContainsString);
+    private boolean contains(Property property) {
+        return !(property == null || property.getValue() == null) && property.getValue().contains(summaryContainsString);
     }
 
     public String getSummaryContainsString() {
         return summaryContainsString;
     }
+
 }

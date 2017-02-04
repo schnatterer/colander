@@ -52,13 +52,13 @@ class ReplaceFilter implements ColanderFilter {
     }
 
     @Override
-    public Optional<CalendarComponent> apply(CalendarComponent event) {
+    public Optional<CalendarComponent> apply(CalendarComponent component) {
         try {
-            replace(event.getProperty(propertyName));
+            replace(component.getProperty(propertyName));
         } catch (IOException | URISyntaxException | ParseException e) {
             throw new ColanderParserException(e);
         }
-        return Optional.of(event);
+        return Optional.of(component);
     }
 
     /**

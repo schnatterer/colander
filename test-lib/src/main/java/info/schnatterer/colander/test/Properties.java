@@ -29,7 +29,7 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import java.util.Optional;
 
 /**
- * {@link Property} helper.
+ * Conveniently provides {@link Property}s in a {@code null}-safe way..
  */
 public class Properties {
     public static Optional<Property> getSummary(CalendarComponent component) {

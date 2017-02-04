@@ -47,8 +47,8 @@ import static org.mockito.Mockito.*;
 
 public class FilterChainTest {
 
-    private VEventFilter passThroughFilter1 = mock(VEventFilter.class);
-    private VEventFilter passThroughFilter2 = mock(VEventFilter.class);
+    private ColanderFilter passThroughFilter1 = mock(ColanderFilter.class);
+    private ColanderFilter passThroughFilter2 = mock(ColanderFilter.class);
     private VEvent inputEvent = new VEvent();
 
     @Before
@@ -92,7 +92,7 @@ public class FilterChainTest {
             add(event2);
         }});
 
-        VEventFilter deleteEventFilter = mock(VEventFilter.class);
+        ColanderFilter deleteEventFilter = mock(ColanderFilter.class);
         when(deleteEventFilter.apply(any(VEvent.class))).thenAnswer(new PassThroughAnswer());
         when(deleteEventFilter.apply(event1)).thenReturn(Optional.empty());
         FilterChain pipe = new FilterChain(Arrays.asList(passThroughFilter1, deleteEventFilter, passThroughFilter2));
@@ -112,7 +112,7 @@ public class FilterChainTest {
     public void testFilterEvent() {
         FilterChain pipe = new FilterChain(Arrays.asList(passThroughFilter1, passThroughFilter2));
 
-        Optional<VEvent> actualFilteredEvent = pipe.filterEvent(inputEvent);
+        Optional<CalendarComponent> actualFilteredEvent = pipe.filterEvent(inputEvent);
         verify(passThroughFilter1).apply(inputEvent);
         verify(passThroughFilter2).apply(inputEvent);
         assertOptional("Unexpected filtered event", inputEvent, actualFilteredEvent, Assert::assertEquals);
@@ -120,19 +120,19 @@ public class FilterChainTest {
 
     @Test
     public void testFilterEventDelete() {
-        VEventFilter filter2 = mock(VEventFilter.class);
+        ColanderFilter filter2 = mock(ColanderFilter.class);
         FilterChain pipe = new FilterChain(Arrays.asList(passThroughFilter1, filter2, passThroughFilter2));
 
-        Optional<VEvent> vEvent = pipe.filterEvent(inputEvent);
+        Optional<CalendarComponent> vEvent = pipe.filterEvent(inputEvent);
         verify(passThroughFilter1).apply(inputEvent);
         verify(filter2).apply(inputEvent);
         verify(passThroughFilter2, never()).apply(inputEvent);
         assertEmpty("Event not deleted", vEvent);
     }
 
-    private static class PassThroughAnswer implements Answer<Optional<VEvent>> {
+    private static class PassThroughAnswer implements Answer<Optional<CalendarComponent>> {
         @Override
-        public Optional<VEvent> answer(InvocationOnMock invocationOnMock) throws Throwable {
+        public Optional<CalendarComponent> answer(InvocationOnMock invocationOnMock) throws Throwable {
             return Optional.of((VEvent) invocationOnMock.getArguments()[0]);
         }
     }

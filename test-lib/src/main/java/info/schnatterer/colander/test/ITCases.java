@@ -26,17 +26,21 @@ package info.schnatterer.colander.test;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Constants used for testing in all modules.
@@ -44,11 +48,11 @@ import static org.junit.Assert.assertEquals;
 public class ITCases {
     private static final String ICS_FILE = "ColanderIT.ics";
 
-    private ITCases() {}
+    private ITCases() {
+    }
 
     /**
      * @return the absolute file path to test ICS file
-     * @param folder
      */
     public static String getFilePathTestIcs(TemporaryFolder folder) throws IOException {
         return getFilePathTestIcs(ICS_FILE, folder);
@@ -59,23 +63,29 @@ public class ITCases {
      */
     @SuppressWarnings("squid:S1160") // This is a test-lib. Don't try to win a trophy for its design.
     public static void verifyParsedIcs(String inputPath, String outputPath) throws IOException, ParserException {
-        Calendar inCal = new CalendarBuilder().build(new FileInputStream(outputPath));
-        Calendar outCal = new CalendarBuilder().build(new FileInputStream(outputPath));
-        List<VEvent> events = outCal.getComponents("VEVENT").stream()
-            .map(component -> (VEvent) component)
-            .collect(Collectors.toList());
-        assertEquals("Number of components", 2, events.size());
-        findEventBySummary(events, "Duplicate");
-        VEvent replacedEvent = findEventBySummary(events, "Replace");
+        Calendar originalCal = new CalendarBuilder().build(new FileInputStream(inputPath));
+        Calendar filteredCal = new CalendarBuilder().build(new FileInputStream(outputPath));
+        List<CalendarComponent> filteredComponents = filteredCal.getComponents();
+        ComponentList<CalendarComponent> originalComponents = originalCal.getComponents();
+        assertEquals("Number of components", originalComponents.size() - 3L, filteredComponents.size());
+        CalendarComponent duplicate = findComponentBySummary(filteredComponents, "Duplicate");
+        CalendarComponent replacedEvent = findComponentBySummary(filteredComponents, "event Replace");
         assertEquals("Replaced event description", "FirstLine\nSecondLine\nThirdLine\n",
-            replacedEvent.getDescription().getValue());
-        assertEquals("Replaced event summary", "Replace!",
-            replacedEvent.getSummary().getValue());
+            replacedEvent.getProperty(Property.DESCRIPTION).getValue());
+        assertEquals("Replaced event summary", "event Replace!",
+            replacedEvent.getProperty(Property.SUMMARY).getValue());
 
-        // Assert other components were copied untouched
-        Set<CalendarComponent> expectedOtherComponents = getNonEventComponents(inCal);
-        Set<CalendarComponent> actualOtherComponents = getNonEventComponents(outCal);
-        assertEquals("Non-event calender component from input missing in output calender", expectedOtherComponents, actualOtherComponents);
+        CalendarComponent replacedToDo = findComponentBySummary(filteredComponents, "TDO Replace");
+        assertEquals("Replaced todo summary", "TDO Replace!",
+            replacedToDo.getProperty(Property.SUMMARY).getValue());
+
+        // Check unfiltered components
+        Set<CalendarComponent> changedComponents = new HashSet<>(Arrays.asList(duplicate, replacedEvent, replacedToDo));
+        filteredComponents.stream()
+            .filter(component -> !changedComponents.contains(component))
+            .forEach(unchangedComponent ->
+                assertTrue("Unfiltered calender component not found in inut calender. Was it changed? Component: "
+                + unchangedComponent, originalComponents.contains(unchangedComponent)));
     }
 
     /**
@@ -93,10 +103,11 @@ public class ITCases {
         return newIcsFile.getAbsolutePath();
     }
 
-    private static VEvent findEventBySummary(List<VEvent> events, String summaryContains) {
-        List<VEvent> filteredEvents = events.stream().filter(even -> even.getSummary().getValue().contains(summaryContains))
+    private static CalendarComponent findComponentBySummary(List<CalendarComponent> events, String summaryContains) {
+        List<CalendarComponent> filteredEvents = events.stream()
+            .filter(event -> Properties.getSummaryValue(event).map(value -> value.contains(summaryContains)).orElse(false))
             .collect(Collectors.toList());
-        assertEquals("Expected number of events with summary: " + summaryContains, 1,  filteredEvents.size());
+        assertEquals("Expected number of events with summary: " + summaryContains, 1, filteredEvents.size());
         return filteredEvents.get(0);
     }
 
@@ -105,11 +116,4 @@ public class ITCases {
             return buffer.lines().collect(Collectors.joining("\n"));
         }
     }
-
-    private static Set<CalendarComponent> getNonEventComponents(Calendar cal) {
-        return cal.getComponents().stream()
-            .filter(calendarComponent -> !"VEVENT".equals(calendarComponent.getName()))
-            .collect(Collectors.toSet());
-    }
-
 }

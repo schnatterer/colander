@@ -50,7 +50,7 @@ public class Colander {
      * Builder that allows configuring colander's filters fluently. Use {@link #rinse()} to apply.
      */
     public static class ColanderBuilder {
-        List<VEventFilter> filters = new ArrayList<>();
+        List<ColanderFilter> filters = new ArrayList<>();
         final String filePath;
 
         ColanderBuilder(String filePath) {
@@ -63,7 +63,7 @@ public class Colander {
          * @return a reference to this object.
          */
         public ColanderBuilder removeDuplicates() {
-            filters.add(new DuplicateFilter());
+            filters.add(new DuplicateEventFilter());
             return this;
         }
 
@@ -123,7 +123,7 @@ public class Colander {
          * @param filter the event filter
          * @return a reference to this object.
          */
-        public ColanderBuilder filter(VEventFilter filter) {
+        public ColanderBuilder filter(ColanderFilter filter) {
             filters.add(filter);
             return this;
         }

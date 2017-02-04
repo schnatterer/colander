@@ -23,6 +23,7 @@
  */
 package info.schnatterer.colander;
 
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import java.util.Optional;
@@ -35,10 +36,10 @@ import java.util.Optional;
  *     <li>no end date.</li>
  * </ul>
  */
-class EmptyEventRemovalFilter implements VEventFilter {
+class EmptyEventRemovalFilter extends TypedColanderFilter<VEvent> {
 
     @Override
-    public Optional<VEvent> apply(VEvent event) {
+    protected Optional<CalendarComponent> applyTyped(VEvent event) {
         if (event.getSummary() == null || event.getStartDate() == null || event.getEndDate() == null) {
             return Optional.empty();
         } else {

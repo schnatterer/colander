@@ -38,8 +38,8 @@ import java.time.ZoneId;
 import static org.junit.AssertLambda.assertEmpty;
 import static org.junit.AssertLambda.assertOptional;
 
-public class DuplicateFilterTest {
-    private DuplicateFilter filter = new DuplicateFilter();
+public class DuplicateEventFilterTest {
+    private DuplicateEventFilter filter = new DuplicateEventFilter();
 
     private LocalDateTime startDate = LocalDateTime.of(2012, Month.DECEMBER, 12, 13, 0);
     private LocalDateTime endDate = LocalDateTime.of(2012, Month.DECEMBER, 12, 23, 59);

@@ -24,7 +24,7 @@
 package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,9 +32,9 @@ import java.text.ParseException;
 import java.util.Optional;
 
 /**
- * Replaces regex in a {@link Property}of an event.
+ * Replaces regex in a {@link Property} of a calender component.
  */
-class ReplaceFilter implements VEventFilter {
+class ReplaceFilter implements ColanderFilter {
 
     private final String stringToReplace;
     private final String regex;
@@ -52,7 +52,7 @@ class ReplaceFilter implements VEventFilter {
     }
 
     @Override
-    public Optional<VEvent> apply(VEvent event) {
+    public Optional<CalendarComponent> apply(CalendarComponent event) {
         try {
             replace(event.getProperty(propertyName));
         } catch (IOException | URISyntaxException | ParseException e) {

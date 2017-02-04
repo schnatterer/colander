@@ -23,21 +23,22 @@
  */
 package info.schnatterer.colander;
 
-import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 
 import java.util.Optional;
 
 /**
- * Interface for filters that mutate or delete events in a filter chain.
+ * Interface for filters that mutate or delete calender componennts (such as events, ToDos, etc.) in a filter chain.
  */
 @FunctionalInterface
-public interface VEventFilter {
+public interface ColanderFilter {
     /**
-     * Filters an event.
+     * Filters a calendar component.
      *
-     * @param event subject to be filtered
-     * @return an event to be passed to next apply.
+     * @param component subject to be filtered
+     * @return a calendar component to be passed to next filter or {@link Optional#empty()} if the component should be
+     * removed.
      * @throws ColanderParserException if anything goes wrong
      */
-    Optional<VEvent> apply(VEvent event);
+    Optional<CalendarComponent> apply(CalendarComponent component);
 }

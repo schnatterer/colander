@@ -26,7 +26,6 @@ package info.schnatterer.colander;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Brings together multiple {@link VEventFilter}s and applies them to all events of an iCal file.
+ * Brings together multiple {@link ColanderFilter}s and applies them to all events of an iCal file.
  */
 class FilterChain {
     static {
@@ -44,9 +43,9 @@ class FilterChain {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilterChain.class);
 
-    private final List<VEventFilter> filters;
+    private final List<ColanderFilter> filters;
 
-    public FilterChain(List<VEventFilter> filters) {
+    public FilterChain(List<ColanderFilter> filters) {
         this.filters = filters;
     }
 
@@ -63,12 +62,7 @@ class FilterChain {
 
         ComponentList<CalendarComponent> allComponents = cal.getComponents();
         for (CalendarComponent component : allComponents) {
-            if ("VEVENT".equals(component.getName())) {
-                filterEvent((VEvent) component).ifPresent(calOut.getComponents()::add);
-            } else {
-                // Just pipe other components through
-                calOut.getComponents().add(component);
-            }
+                filterEvent(component).ifPresent(calOut.getComponents()::add);
         }
         // TODO count amount of filtered classes per apply (using BaseFilter class?)
         LOG.info("Number of records processed: {}", allComponents.size());
@@ -80,19 +74,21 @@ class FilterChain {
 
     /**
      * Visible for testing
+     * @param component
      */
     @SuppressWarnings("WeakerAccess")
-    protected Optional<VEvent> filterEvent(VEvent event) {
-        VEvent filteredEvent = event;
-        for (VEventFilter filter : filters) {
-            Optional<VEvent> returnedEvent = filter.apply(filteredEvent);
+    protected Optional<CalendarComponent> filterEvent(CalendarComponent component) {
+        CalendarComponent filteredComponent = component;
+        for (ColanderFilter filter : filters) {
+            Optional<CalendarComponent> returnedEvent = filter.apply(filteredComponent);
             if (returnedEvent.isPresent()) {
-                filteredEvent = returnedEvent.get();
+                filteredComponent = returnedEvent.get();
             } else {
-                LOG.debug("Filter {} deleted originalEvent {}", filter.getClass().getSimpleName(), event.getSummary());
+                LOG.debug("Filter {} deleted originalEvent {}. Properties={}", filter.toString(), component.getName(),
+                    component.getProperties());
                 return Optional.empty();
             }
         }
-        return Optional.of(filteredEvent);
+        return Optional.of(filteredComponent);
     }
 }

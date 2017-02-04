@@ -23,6 +23,7 @@
  */
 package info.schnatterer.colander;
 
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -35,12 +36,12 @@ import java.util.Set;
 /**
  * Removes all events that have the same summary, start and end date.
  */
-class DuplicateFilter implements VEventFilter {
+class DuplicateEventFilter extends TypedColanderFilter<VEvent>{
 
     private Set<VEvent> filteredEvents = new HashSet<>();
 
     @Override
-    public Optional<VEvent> apply(VEvent event) {
+    public Optional<CalendarComponent> applyTyped(VEvent event) {
         ComparisonVEvent comparisonVEvent = new ComparisonVEvent(event);
 
         if (filteredEvents.contains(comparisonVEvent)) {
@@ -50,6 +51,7 @@ class DuplicateFilter implements VEventFilter {
             return Optional.of(event);
         }
     }
+
 
     /**
      * Class that specifies the attributes of a {@link VEvent} that are compared when looking for "duplicates".

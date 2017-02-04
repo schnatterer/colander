@@ -54,7 +54,7 @@ public class ColanderTest {
     @Test
     public void removeDuplicates() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeDuplicates();
-        assertThat(colanderBuilder.filters, hasItem(isA(DuplicateFilter.class)));
+        assertThat(colanderBuilder.filters, hasItem(isA(DuplicateEventFilter.class)));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class ColanderTest {
     @Test
     public void filter() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).filter(event -> Optional.empty());
-        List<VEventFilter> allFilters = getFiltersByClass(colanderBuilder, VEventFilter.class);
+        List<ColanderFilter> allFilters = getFiltersByClass(colanderBuilder, ColanderFilter.class);
         assertEquals("Unexpected amount of filters found", 1, allFilters.size());
         allFilters.forEach(
             filter -> {
@@ -119,11 +119,11 @@ public class ColanderTest {
             .replaceInSummary("a", "b")
             .removeEmptyEvents()
             .removeDuplicates();
-        Iterator<VEventFilter> filters = colanderBuilder.filters.iterator();
+        Iterator<ColanderFilter> filters = colanderBuilder.filters.iterator();
         assertTrue("Unexpected order", filters.next() instanceof SummaryEventRemoverFilter);
         assertTrue("Unexpected order", filters.next() instanceof ReplaceFilter);
         assertTrue("Unexpected order", filters.next() instanceof EmptyEventRemovalFilter);
-        assertTrue("Unexpected order", filters.next() instanceof DuplicateFilter);
+        assertTrue("Unexpected order", filters.next() instanceof DuplicateEventFilter);
     }
 
 
@@ -147,7 +147,7 @@ public class ColanderTest {
         assertSame(cal, colanderResult.writtenCal);
     }
 
-    private <T extends VEventFilter> List<T> getFiltersByClass(ColanderBuilder colanderBuilder, Class<T> clazz) {
+    private <T extends ColanderFilter> List<T> getFiltersByClass(ColanderBuilder colanderBuilder, Class<T> clazz) {
         return colanderBuilder.filters.stream()
             .filter(clazz::isInstance)
             .map(clazz::cast)

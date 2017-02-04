@@ -24,40 +24,42 @@
 package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Summary;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
 /**
- * Removes event, when its summary contains a specific string.
+ * Base class for filters, that filter only specific
  */
-// TODO generalize to ColanderFilter
-class SummaryEventRemoverFilter extends TypedColanderFilter<VEvent> {
-    private String summaryContainsString;
+public abstract class TypedColanderFilter<T extends CalendarComponent> implements ColanderFilter {
+
 
     /**
-     * @param summaryContainsString remove summary when it contains this string
+     * Template method for concrete classes. Same as {@link #apply(CalendarComponent)}, but casted to the calender
+     * component type that this filter applies to.
+     *
+     * @param concreteComponent concrete calender component type that this filter applies to.
+     * @return a calendar component to be passed to next filter or {@link Optional#empty()} if the component should be
+     * removed.
+     * @throws ColanderParserException if anything goes wrong
      */
-    public SummaryEventRemoverFilter(String summaryContainsString) {
-        this.summaryContainsString = summaryContainsString;
-    }
+    protected abstract Optional<CalendarComponent> applyTyped(T concreteComponent);
+
 
     @Override
-    protected Optional<CalendarComponent> applyTyped(VEvent event) {
-        if (contains(event)) {
-            return Optional.empty();
+    public Optional<CalendarComponent> apply(CalendarComponent abstractComponent) {
+        Class<T> filteredComponentType = getFilteredComponentType();
+        if (filteredComponentType.isInstance(abstractComponent)) {
+            return applyTyped(filteredComponentType.cast(abstractComponent));
         } else {
-            return Optional.of(event);
+            // Don't filter
+            return Optional.of(abstractComponent);
         }
     }
 
-    private boolean contains(VEvent event) {
-        Summary summary = event.getSummary();
-        return !(summary == null || summary.getValue() == null) && summary.getValue().contains(summaryContainsString);
-    }
 
-    public String getSummaryContainsString() {
-        return summaryContainsString;
+    protected Class<T> getFilteredComponentType() {
+        return (Class<T>) ((ParameterizedType) getClass()
+            .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 }

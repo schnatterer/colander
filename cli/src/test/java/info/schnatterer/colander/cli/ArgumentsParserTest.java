@@ -112,13 +112,13 @@ public class ArgumentsParserTest {
 
     @Test
     public void readRemoveDuplicates() {
-        Arguments read = read("--remove-duplicates", "input", "output");
+        Arguments read = read("--remove-duplicate-events", "input", "output");
         assertTrue("Remove duplicates", read.isRemoveDuplicates());
     }
 
     @Test
     public void readRemoveEmpty() {
-        assertTrue("Remove empty", read("--remove-empty", "input", "output").isRemoveEmpty());
+        assertTrue("Remove empty", read("--remove-empty-events", "input", "output").isRemoveEmpty());
     }
 
     @Test

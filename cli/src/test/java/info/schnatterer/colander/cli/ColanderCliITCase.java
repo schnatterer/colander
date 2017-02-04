@@ -55,8 +55,8 @@ public class ColanderCliITCase {
             ITCases.verifyParsedIcs(inputPath, outputPath);
         });
         execute(
-            "--remove-duplicates",
-            "--remove-empty",
+            "--remove-duplicate-events",
+            "--remove-empty-events",
             "--remove-summary", "Remove me",
             "--replace-description L.ne=Line",
             "--replace-summary Replace=Replace!",

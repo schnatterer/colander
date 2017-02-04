@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/github/license/schnatterer/colander.svg)](LICENSE)
 [<img alt="powered by openshift" align="right" src="https://www.openshift.com/images/logos/powered_by_openshift.png"/>](https://www.openshift.com/)
 
-Colander filters calender events in ICS files. It can either be used as standalone application via [command line interface](#cli) or within 
+Colander filters calender in ICS files. It can either be used as standalone application via [command line interface](#cli) or within 
 JVM applications using the [API](#api). 
 
 # CLI
@@ -22,34 +22,37 @@ JVM applications using the [API](#api).
       --help
         (optional) Show this message
         Default: false
-      --remove-duplicates
-        Remove when summary, start date or end date are empty
+      --remove-duplicate-events
+        Remove events when summary, start date or end date are empty
         Default: false
-      --remove-empty
-        Remove when summary, start date or end date appear multiple times
+      --remove-empty-events
+        Remove event when summary, start date or end date appear multiple
+        times
         Default: false
       --remove-summary
-        Remove when summary contains expression
+        Remove calender component when summary contains expression
         Default: []
       --replace-description
-        Replace in description (regex)
+        Replace in description of calender components (regex)
         Syntax: --replace-descriptionkey=value
         Default: {}
       --replace-summary
-        Replace in summary (regex)
+        Replace in summary calender components (regex)
         Syntax: --replace-summarykey=value
         Default: {}
-```
 
+```
 * Example 
 ```
 colander --remove-summary "Remove, RemoveIncludingLeadingSpace" --remove-summary "Another One to remove" --replace-summary "l.ne=line" cal.ics cal-new.ics
 ```
-* Note that the order of the arguments/filters is not maintained. That is, they are not applied in the order as passed
+* Note that 
+  * filters might refer to specific calender components (such as events). If not otherwise noted, a filter applies to all calender components (tasks, ToDos, Alarms, Venues, etc.)
+  * the order of the arguments/filters is not maintained. That is, they are not applied in the order as passed
 to the CLI.
-* If no `output.ics` file is passed, colander creates one, basing on the file name and the current timestamp, e.g. `input-20170129194742.ics`.
-* Colander never overwrites existing files. If the `output.ics` exists, colander fails.
-* If you care about return codes, they can be found here: [ExitStatus](cli/src/main/java/info/schnatterer/colander/cli/ExitStatus.java))
+  * If no `output.ics` file is passed, colander creates one, basing on the file name and the current timestamp, e.g. `input-20170129194742.ics`.
+  * Colander never overwrites existing files. If the `output.ics` exists, colander fails.
+  * If you care about return codes, they can be found here: [ExitStatus](cli/src/main/java/info/schnatterer/colander/cli/ExitStatus.java))
 * Another example is the integration test for CLI (see [ColanderCliITCase](cli/src/test/java/info/schnatterer/colander/cli/ColanderCliITCase.java)). 
 
 # API

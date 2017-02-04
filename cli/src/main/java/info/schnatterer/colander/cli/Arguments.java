@@ -42,19 +42,19 @@ public class Arguments {
     @Parameter(required = true, description = "<input.ics> [<output.ics]>")
     private List<String> mainArguments = new ArrayList<>();
 
-    @DynamicParameter(names = "--replace-summary", description = "Replace in summary (regex)")
+    @DynamicParameter(names = "--replace-summary", description = "Replace in summary calender components (regex)")
     private Map<String, String> replaceInSummary = new HashMap<>();
 
-    @DynamicParameter(names = "--replace-description", description = "Replace in description (regex)")
+    @DynamicParameter(names = "--replace-description", description = "Replace in description of calender components (regex)")
     private Map<String, String> replaceInDescription = new HashMap<>();
 
-    @Parameter(names = "--remove-summary", description = "Remove when summary contains expression")
+    @Parameter(names = "--remove-summary", description = "Remove calender component when summary contains expression")
     private List<String> removeSummaryContains = new ArrayList<>();
 
-    @Parameter(names = "--remove-duplicates", description = "Remove when summary, start date or end date are empty")
+    @Parameter(names = "--remove-duplicate-events", description = "Remove event when summary, start date or end date appear multiple times")
     private boolean removeDuplicates = false;
 
-    @Parameter(names = "--remove-empty", description = "Remove when summary, start date or end date appear multiple times")
+    @Parameter(names = "--remove-empty-events", description = "Remove events when summary, start date or end date are empty")
     private boolean removeEmpty = false;
 
     @Parameter(names = "--help", help = true, description = "(optional) Show this message")

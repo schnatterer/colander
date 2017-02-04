@@ -58,8 +58,9 @@ public abstract class TypedColanderFilter<T extends CalendarComponent> implement
     }
 
 
-    protected Class<T> getFilteredComponentType() {
-        return (Class<T>) ((ParameterizedType) getClass()
-            .getGenericSuperclass()).getActualTypeArguments()[0];
+    @SuppressWarnings("unchecked") // Due to type erasure, there seem to be no good options of getting the generic type.
+    private Class<T> getFilteredComponentType() {
+        // Note that this only works for complex type hierarchies. Let's just not create these!
+        return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 }

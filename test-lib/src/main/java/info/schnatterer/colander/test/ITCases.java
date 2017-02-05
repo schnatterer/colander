@@ -23,6 +23,7 @@
  */
 package info.schnatterer.colander.test;
 
+import info.schnatterer.colander.Properties;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;

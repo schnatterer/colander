@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package info.schnatterer.colander.test;
+package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
@@ -29,7 +29,7 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import java.util.Optional;
 
 /**
- * Conveniently provides {@link Property}s in a {@code null}-safe way..
+ * Conveniently provides {@link Property}s in a {@code null}-safe way.
  */
 public class Properties {
     public static Optional<Property> getSummary(CalendarComponent component) {

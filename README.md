@@ -77,7 +77,7 @@ Then add the actual dependency
         <dependency>
             <groupId>com.github.schnatterer.colander</groupId>
             <artifactId>colander-core</artifactId>
-            <version>-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
 ```
 

@@ -133,7 +133,10 @@ class ColanderIO {
     /**
      * Visible for testing
      */
-    CalendarOutputter createCalendarOutputter() { return new CalendarOutputter(); }
+    CalendarOutputter createCalendarOutputter() {
+        // Don't validate output. SISO.
+        return new CalendarOutputter(false);
+    }
 
     /**
      * Visible for testing

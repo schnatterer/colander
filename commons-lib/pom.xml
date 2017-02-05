@@ -35,8 +35,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>colander-core</artifactId>
-    <name>core</name>
+    <artifactId>colander-commons-lib</artifactId>
+    <name>commons-lib</name>
 
     <packaging>jar</packaging>
 
@@ -44,27 +44,34 @@
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <dependencies>
+        <!-- 3rd party-->
         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>colander-commons-lib</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
-        <!-- test -->
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>colander-test-lib</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
 
+        <!-- TODO use original ical4j, when new version contains the following fix:
+         https://github.com/ical4j/ical4j/pull/127#partial-pull-merging
+         Don't forget removing jitpack repo. -->
+        <!--<dependency>
+            <groupId>org.mnode.ical4j</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>2.0.0</version>
+        </dependency>-->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
+            <groupId>com.github.schnatterer</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>540d6d4609</version>
         </dependency>
     </dependencies>
 </project>

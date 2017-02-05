@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Brings together multiple {@link ColanderFilter}s and applies them to all events of an iCal file.
@@ -57,17 +58,24 @@ class FilterChain {
      */
     Calendar run(Calendar cal) {
         LOG.info("Start processing. Please wait...");
+        AtomicInteger changedComponents = new AtomicInteger(0);
         // Create empty output calendar with same properties
         Calendar calOut = new Calendar(cal.getProperties(), new ComponentList<>());
 
         ComponentList<CalendarComponent> allComponents = cal.getComponents();
         for (CalendarComponent component : allComponents) {
-                filterEvent(component).ifPresent(calOut.getComponents()::add);
+            int originalHashCode = component.hashCode();
+            filterEvent(component).ifPresent( filteredComponent -> {
+                    if (originalHashCode != filteredComponent.hashCode()) {
+                        changedComponents.incrementAndGet();
+                    }
+                    calOut.getComponents().add(filteredComponent);
+                });
         }
-        // TODO count amount of filtered classes per apply (using BaseFilter class?)
-        LOG.info("Number of records processed: {}", allComponents.size());
-        LOG.info("Number of records in new calendar: {}", calOut.getComponents().size());
-        LOG.info("Number of records deleted: {}", allComponents.size() - calOut.getComponents().size());
+        LOG.info("Number of components processed: {}", allComponents.size());
+        LOG.info("Number of components in new calendar: {}", calOut.getComponents().size());
+        LOG.info("Number of components deleted: {}", allComponents.size() - calOut.getComponents().size());
+        LOG.info("Number of components changed during filtering: {}", changedComponents.get());
 
         return calOut;
     }

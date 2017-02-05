@@ -55,13 +55,13 @@ public class ColanderTest {
     @Test
     public void removeDuplicates() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeDuplicateEvents();
-        assertThat(colanderBuilder.filters, hasItem(isA(DuplicateEventFilter.class)));
+        assertThat(colanderBuilder.filters, hasItem(isA(RemoveDuplicateEventFilter.class)));
     }
 
     @Test
     public void removeEmptyEvents() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeEmptyEvents();
-        assertThat(colanderBuilder.filters, hasItem(isA(EmptyEventRemovalFilter.class)));
+        assertThat(colanderBuilder.filters, hasItem(isA(RemoveEmptyEventFilter.class)));
     }
 
     @Test
@@ -158,8 +158,8 @@ public class ColanderTest {
         Iterator<ColanderFilter> filters = colanderBuilder.filters.iterator();
         assertTrue("Unexpected order", filters.next() instanceof RemoveFilter);
         assertTrue("Unexpected order", filters.next() instanceof ReplaceFilter);
-        assertTrue("Unexpected order", filters.next() instanceof EmptyEventRemovalFilter);
-        assertTrue("Unexpected order", filters.next() instanceof DuplicateEventFilter);
+        assertTrue("Unexpected order", filters.next() instanceof RemoveEmptyEventFilter);
+        assertTrue("Unexpected order", filters.next() instanceof RemoveDuplicateEventFilter);
     }
 
 

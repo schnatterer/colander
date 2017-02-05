@@ -58,39 +58,38 @@ public class Colander {
         }
 
         /**
-         * Removes all events that have the same summary, start and end date.
+         * Remove event when summary, description, start date or end date are the same in another event.
          *
          * @return a reference to this object.
          */
         public ColanderBuilder removeDuplicateEvents() {
-            filters.add(new DuplicateEventFilter());
+            filters.add(new RemoveDuplicateEventFilter());
             return this;
         }
 
         /**
-         * Removes event when it either has
+         * Removes event when it has
          * <ul>
-         *     <li>no summary,</li>
-         *     <li>no start date or </li>
-         *     <li>no end date.</li>
+         *     <li>no summary and </li>
+         *     <li>no description.</li>
          * </ul>
          *
          * @return a reference to this object.
          */
         public ColanderBuilder removeEmptyEvents() {
-            filters.add(new EmptyEventRemovalFilter());
+            filters.add(new RemoveEmptyEventFilter());
             return this;
         }
 
         /**
          * Removes a calender component, when one of its properties contains a specific string.
          *
-         * @param propertyName property to search
-         * @param summaryContainsString remove when summary contains this string
+         * @param propertyName          the event property to search
+         * @param propertyContainsString remove component when it's property contains this string
          * @return a reference to this object.
          */
-        public ColanderBuilder removePropertyContains(String propertyName, String summaryContainsString) {
-            filters.add(new RemoveFilter(summaryContainsString, propertyName));
+        public ColanderBuilder removePropertyContains(String propertyName, String propertyContainsString) {
+            filters.add(new RemoveFilter(propertyContainsString, propertyName));
             return this;
         }
 

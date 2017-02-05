@@ -25,6 +25,7 @@ package info.schnatterer.colander;
 
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
@@ -34,9 +35,9 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Removes all events that have the same summary, start and end date.
+ * Remove event when summary, description, start date or end date are the same in another event.
  */
-public class DuplicateEventFilter extends TypedColanderFilter<VEvent>{
+public class RemoveDuplicateEventFilter extends TypedColanderFilter<VEvent>{
 
     private Set<VEvent> filteredEvents = new HashSet<>();
 
@@ -58,30 +59,41 @@ public class DuplicateEventFilter extends TypedColanderFilter<VEvent>{
      */
     private static class ComparisonVEvent extends VEvent {
         private Summary summary;
+        private Description description;
         private DtStart startDate;
         private DtEnd endDate;
 
         ComparisonVEvent(VEvent eventToCompare) {
             this.summary = eventToCompare.getSummary();
+            this.description = eventToCompare.getDescription();
             this.startDate = eventToCompare.getStartDate();
             this.endDate = eventToCompare.getEndDate();
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o)
+            if (this == o) {
                 return true;
-            if (o == null || getClass() != o.getClass())
+            }
+            if (o == null || getClass() != o.getClass()) {
                 return false;
-            if (!super.equals(o))
+            }
+            if (!super.equals(o)) {
                 return false;
+            }
 
             ComparisonVEvent that = (ComparisonVEvent) o;
 
-            if (summary != null ? !summary.equals(that.summary) : that.summary != null)
+            if (summary != null ? !summary.equals(that.summary) : that.summary != null) {
                 return false;
-            if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null)
+            }
+            if (description != null ? !description.equals(that.description) : that.description != null) {
                 return false;
+            }
+            //noinspection SimplifiableIfStatement
+            if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) {
+                return false;
+            }
             return endDate != null ? endDate.equals(that.endDate) : that.endDate == null;
         }
 
@@ -89,6 +101,7 @@ public class DuplicateEventFilter extends TypedColanderFilter<VEvent>{
         public int hashCode() {
             int result = super.hashCode();
             result = 31 * result + (summary != null ? summary.hashCode() : 0);
+            result = 31 * result + (description != null ? description.hashCode() : 0);
             result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
             result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
             return result;

@@ -32,11 +32,30 @@ import java.util.Optional;
  * Conveniently provides {@link Property}s in a {@code null}-safe way.
  */
 public class Properties {
+
     public static Optional<Property> getSummary(CalendarComponent component) {
-        return Optional.ofNullable(component.getProperty(Property.SUMMARY));
+        return getProperty(component, Property.SUMMARY);
     }
 
     public static Optional<String> getSummaryValue(CalendarComponent component) {
-        return getSummary(component).map(property -> Optional.ofNullable(property.getValue())).orElse(Optional.empty());
+        return getPropertyValue(component, Property.SUMMARY);
+    }
+
+    public static Optional<Property> getDescription(CalendarComponent component) {
+        return getProperty(component, Property.DESCRIPTION);
+    }
+
+    public static Optional<String> getDescriptionValue(CalendarComponent component) {
+        return getPropertyValue(component, Property.DESCRIPTION);
+    }
+
+    public static Optional<Property> getProperty(CalendarComponent component, String propertyName) {
+        return Optional.ofNullable(component.getProperty(propertyName));
+    }
+
+    public static Optional<String> getPropertyValue(CalendarComponent component, String propertyName) {
+        return getProperty(component, propertyName)
+            .map(property -> Optional.ofNullable(property.getValue()))
+            .orElse(Optional.empty());
     }
 }

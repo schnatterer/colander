@@ -51,10 +51,10 @@ public class Arguments {
     @Parameter(names = "--remove-summary", description = "Remove calender component when summary contains expression")
     private List<String> removeSummaryContains = new ArrayList<>();
 
-    @Parameter(names = "--remove-duplicate-events", description = "Remove event when summary, start date or end date appear multiple times")
+    @Parameter(names = "--remove-duplicate-events", description = "Remove event when summary, description, start date or end date are the same in another event")
     private boolean removeDuplicateEvents = false;
 
-    @Parameter(names = "--remove-empty-events", description = "Remove events when summary, start date or end date are empty")
+    @Parameter(names = "--remove-empty-events", description = "Remove events when summary and description are empty")
     private boolean removeEmptyEvents = false;
 
     @Parameter(names = "--help", help = true, description = "(optional) Show this message")

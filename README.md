@@ -23,10 +23,10 @@ JVM applications using the [API](#api).
         (optional) Show this message
         Default: false
       --remove-duplicate-events
-        Remove events when summary, start date or end date are empty
+        Remove event when summary, description, start date or end date are the same in another event
         Default: false
       --remove-empty-events
-        Remove event when summary, start date or end date appear multiple
+        Remove events when summary and description are empty
         times
         Default: false
       --remove-summary

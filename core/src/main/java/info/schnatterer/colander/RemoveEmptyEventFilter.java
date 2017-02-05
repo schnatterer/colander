@@ -29,18 +29,18 @@ import net.fortuna.ical4j.model.component.VEvent;
 import java.util.Optional;
 
 /**
- * Removes event when it either has
+ * Removes event when it has
  * <ul>
- *     <li>no summary,</li>
- *     <li>no start date or </li>
- *     <li>no end date.</li>
+ *     <li>no summary and </li>
+ *     <li>no description.</li>
  * </ul>
  */
-public class EmptyEventRemovalFilter extends TypedColanderFilter<VEvent> {
+public class RemoveEmptyEventFilter extends TypedColanderFilter<VEvent> {
 
     @Override
     protected Optional<CalendarComponent> applyTyped(VEvent event) {
-        if (event.getSummary() == null || event.getStartDate() == null || event.getEndDate() == null) {
+        if (Properties.getSummaryValue(event).orElse("").isEmpty() &&
+            Properties.getDescriptionValue(event).orElse("").isEmpty()) {
             return Optional.empty();
         } else {
             return Optional.of(event);

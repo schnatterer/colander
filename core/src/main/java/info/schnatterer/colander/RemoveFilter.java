@@ -36,11 +36,11 @@ public class RemoveFilter implements ColanderFilter {
     private final String propertyName;
 
     /**
-     * @param summaryContainsString remove summary when it contains this string
-     * @param propertyName          the event property to replace
+     * @param propertyContainsString remove component when it's property contains this string
+     * @param propertyName          the event property to search
      */
-    public RemoveFilter(String summaryContainsString, String propertyName) {
-        this.summaryContainsString = summaryContainsString;
+    public RemoveFilter(String propertyContainsString, String propertyName) {
+        this.summaryContainsString = propertyContainsString;
         this.propertyName = propertyName;
     }
 

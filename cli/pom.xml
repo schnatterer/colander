@@ -42,6 +42,8 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <!-- Printable version name -->
+        <versionName>${project.version} (${maven.build.timestamp})</versionName>
     </properties>
 
     <dependencies>
@@ -61,6 +63,12 @@
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
             <version>1.60</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.triologygmbh.versionName</groupId>
+            <artifactId>versionName</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- test -->
@@ -105,6 +113,9 @@
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>info.schnatterer.colander.cli.ColanderCli</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <versionName>${versionName}</versionName>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -144,4 +155,35 @@
         </plugins>
     </build>
 
+
+    <profiles>
+        <profile>
+            <!-- Profile that extends the printable version number by an optional build.
+                It is activated when an environment variable called BUILD_NUMBER exists (as in Jenkins) -->
+            <id>versionNameBuildNumber</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- @formatter:off -->
+                <versionName>${project.version} build #${env.BUILD_NUMBER} (${maven.build.timestamp})</versionName>
+                <!-- @formatter:on -->
+            </properties>
+        </profile>
+        <profile>
+            <!-- For releases, use a simple version name, consisting of the version number.
+                 don't add timestamp. -->
+            <id>versionNameForRelease</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                </property>
+            </activation>
+            <properties>
+                <versionName>${project.version}</versionName>
+            </properties>
+        </profile>
+    </profiles>
 </project>

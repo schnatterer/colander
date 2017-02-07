@@ -44,13 +44,6 @@
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!-- 3rd party-->
         <dependency>
@@ -61,8 +54,7 @@
 
 
         <!-- TODO use original ical4j, when new version contains the following fix:
-         https://github.com/ical4j/ical4j/pull/127#partial-pull-merging
-         Don't forget removing jitpack repo. -->
+         https://github.com/ical4j/ical4j/pull/127#partial-pull-merging -->
         <!--<dependency>
             <groupId>org.mnode.ical4j</groupId>
             <artifactId>ical4j</artifactId>

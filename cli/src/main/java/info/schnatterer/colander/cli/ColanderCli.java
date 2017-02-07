@@ -23,6 +23,7 @@
  */
 package info.schnatterer.colander.cli;
 
+import de.triology.versionname.VersionNames;
 import info.schnatterer.colander.Colander;
 import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
 import org.slf4j.Logger;
@@ -59,6 +60,7 @@ class ColanderCli {
      */
     @SuppressWarnings("squid:S1166") // Exceptions are logged in ArgumentsParser by contract.
     ExitStatus execute(String[] args) {
+        LOG.info(createProgramNameWithVersion());
         Arguments cliParams;
         try {
             cliParams = ArgumentsParser.read(args, PROGRAM_NAME);
@@ -70,6 +72,15 @@ class ColanderCli {
             return startColander(cliParams);
         }
         return ExitStatus.SUCCESS;
+    }
+
+    private String createProgramNameWithVersion() {
+        String programName = PROGRAM_NAME;
+        String versionNameFromManifest = VersionNames.getVersionNameFromManifest();
+        if (!versionNameFromManifest.isEmpty()) {
+            programName = programName + " " + versionNameFromManifest;
+        }
+        return programName;
     }
 
     /**

@@ -104,6 +104,16 @@ public class Colander {
         }
 
         /**
+         * Removes a calender component, when its summary contains a specific string.
+         *
+         * @param descriptionContainsString remove when summary contains this string
+         * @return a reference to this object.
+         */
+        public ColanderBuilder removeDescriptionContains(String descriptionContainsString) {
+            return removePropertyContains(Property.DESCRIPTION, descriptionContainsString);
+        }
+
+        /**
          * Replaces regex in a calender component's property (e.g. summary, description, ..)
          *
          * @param propertyName property to search
@@ -180,6 +190,8 @@ public class Colander {
         FilterChain createFilterChain() {
             return new FilterChain(filters);
         }
+
+
     }
 
     /**

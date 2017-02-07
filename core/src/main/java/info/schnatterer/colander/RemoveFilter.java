@@ -32,7 +32,7 @@ import java.util.Optional;
  * Removes calender component, when one of its properties contains a specific string.
  */
 public class RemoveFilter implements ColanderFilter {
-    private String summaryContainsString;
+    private String propertyContainsString;
     private final String propertyName;
 
     /**
@@ -40,7 +40,7 @@ public class RemoveFilter implements ColanderFilter {
      * @param propertyName          the event property to search
      */
     public RemoveFilter(String propertyContainsString, String propertyName) {
-        this.summaryContainsString = propertyContainsString;
+        this.propertyContainsString = propertyContainsString;
         this.propertyName = propertyName;
     }
 
@@ -54,11 +54,11 @@ public class RemoveFilter implements ColanderFilter {
     }
 
     private boolean contains(Property property) {
-        return !(property == null || property.getValue() == null) && property.getValue().contains(summaryContainsString);
+        return !(property == null || property.getValue() == null) && property.getValue().contains(propertyContainsString);
     }
 
-    public String getSummaryContainsString() {
-        return summaryContainsString;
+    public String getPropertyContainsString() {
+        return propertyContainsString;
     }
 
     public String getPropertyName() { return propertyName; }

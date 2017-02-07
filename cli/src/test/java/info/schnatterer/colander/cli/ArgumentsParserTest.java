@@ -111,6 +111,17 @@ public class ArgumentsParserTest {
     }
 
     @Test
+    public void readRemoveDescriptionContains() throws Exception {
+        List<String> removeDescriptionContainsMultiple =
+            read("--remove-description", "a", "--remove-description", "\"b c\"", "input", "output").getRemoveDescriptionContains();
+        List<String> removeDescriptionContainsCommaSyntax =
+            read("--remove-description", "\"a,b c\"", "input", "output").getRemoveDescriptionContains();
+        assertThat(removeDescriptionContainsMultiple, contains("a", "b c"));
+        assertEquals("Unexpected amount of replace arguments", 2, removeDescriptionContainsMultiple.size());
+        assertEquals("Multiple parameter syntax and comma syntax are not the same", removeDescriptionContainsCommaSyntax, removeDescriptionContainsMultiple);
+    }
+
+    @Test
     public void readRemoveDuplicates() {
         Arguments read = read("--remove-duplicate-events", "input", "output");
         assertTrue("Remove duplicates", read.isRemoveDuplicateEvents());

@@ -51,6 +51,9 @@ public class Arguments {
     @Parameter(names = "--remove-summary", description = "Remove calender component when summary contains expression")
     private List<String> removeSummaryContains = new ArrayList<>();
 
+    @Parameter(names = "--remove-description", description = "Remove calender component when description contains expression")
+    private List<String> removeDescriptionContains = new ArrayList<>();
+
     @Parameter(names = "--remove-duplicate-events", description = "Remove event when summary, description, start date or end date are the same in another event")
     private boolean removeDuplicateEvents = false;
 
@@ -92,6 +95,13 @@ public class Arguments {
      * @return the terms that when contained in summary, lead to removal.
      */
     public List<String> getRemoveSummaryContains() { return removeSummaryContains; }
+
+    /**
+     * @return the terms that when contained in description, lead to removal.
+     */
+    public List<String> getRemoveDescriptionContains() {
+        return removeDescriptionContains;
+    }
 
     /**
      * @return {@code true} when duplicates should be removed. Otherwise {@code false}.

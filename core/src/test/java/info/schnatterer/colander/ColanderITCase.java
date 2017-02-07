@@ -50,6 +50,7 @@ public class ColanderITCase {
             .removeDuplicateEvents()
             .removeEmptyEvents()
             .removePropertyContains(Property.SUMMARY, "Remove me")
+            .removeDescriptionContains("Remove me 2")
             // Generic replace in property
             .replaceInProperty(Property.DESCRIPTION, "L.ne", "Line")
             // Convenience: replace in property summary

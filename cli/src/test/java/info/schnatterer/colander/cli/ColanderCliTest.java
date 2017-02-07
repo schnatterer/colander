@@ -88,7 +88,8 @@ public class ColanderCliTest {
         when(args.getOutputFile()).thenReturn(expectedOutput);
         when(args.isRemoveDuplicateEvents()).thenReturn(true);
         when(args.isRemoveEmptyEvents()).thenReturn(true);
-        when(args.getRemoveSummaryContains()).thenReturn(Arrays.asList("y", "z"));
+        when(args.getRemoveSummaryContains()).thenReturn(Arrays.asList("a", "b"));
+        when(args.getRemoveDescriptionContains()).thenReturn(Arrays.asList("y", "z"));
         when(args.getReplaceInSummary()).thenReturn(new HashMap<String, String>() {{
                 put("a", "b");
                 put("c", "d");
@@ -107,8 +108,10 @@ public class ColanderCliTest {
         verify(builder).replaceInSummary("c", "d");
         verify(builder).replaceInDescription("1", "2");
         verify(builder).replaceInDescription("3", "4");
-        verify(builder).removeSummaryContains("y");
-        verify(builder).removeSummaryContains("z");
+        verify(builder).removeSummaryContains("a");
+        verify(builder).removeSummaryContains("b");
+        verify(builder).removeDescriptionContains("y");
+        verify(builder).removeDescriptionContains("z");
         verify(result).toFile(expectedOutput);
     }
 
@@ -121,6 +124,7 @@ public class ColanderCliTest {
         verify(builder, never()).removeEmptyEvents();
         verify(builder, never()).replaceInSummary(anyString(), anyString());
         verify(builder, never()).removeSummaryContains(anyString());
+        verify(builder, never()).removeDescriptionContains(anyString());
         verify(result).toFile(null);
     }
 

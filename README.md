@@ -22,12 +22,15 @@ JVM applications using the [API](#api).
       --help
         (optional) Show this message
         Default: false
+      --remove-description
+        Remove calender component when description contains expression
+        Default: []
       --remove-duplicate-events
-        Remove event when summary, description, start date or end date are the same in another event
+        Remove event when summary, description, start date or end date are the 
+        same in another event
         Default: false
       --remove-empty-events
         Remove events when summary and description are empty
-        times
         Default: false
       --remove-summary
         Remove calender component when summary contains expression
@@ -40,7 +43,6 @@ JVM applications using the [API](#api).
         Replace in summary calender components (regex)
         Syntax: --replace-summarykey=value
         Default: {}
-
 ```
 * Example 
 ```
@@ -88,6 +90,7 @@ Colander.toss("/some/input.ics")
     .removeDuplicateEvents()
     .removeEmptyEvents()
     .removePropertyContains(Property.SUMMARY, "Remove me")
+    .removeDescriptionContains("Remove me 2")
     // Generic replace in property
     .replaceInProperty(Property.DESCRIPTION, "L.ne", "Line")
     // Convenience: replace in property summary

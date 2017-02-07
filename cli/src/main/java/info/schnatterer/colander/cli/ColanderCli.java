@@ -90,6 +90,7 @@ class ColanderCli {
         args.getReplaceInSummary().forEach(colander::replaceInSummary);
         args.getReplaceInDescription().forEach(colander::replaceInDescription);
         args.getRemoveSummaryContains().forEach(colander::removeSummaryContains);
+        args.getRemoveDescriptionContains().forEach(colander::removeDescriptionContains);
 
         try {
             colander.rinse().toFile(args.getOutputFile());

@@ -58,6 +58,7 @@ public class ColanderCliITCase {
             "--remove-duplicate-events",
             "--remove-empty-events",
             "--remove-summary", "Remove me",
+            "--remove-description", "Remove me 2",
             "--replace-description L.ne=Line",
             "--replace-summary Replace=Replace!",
             inputPath,

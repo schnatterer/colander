@@ -68,7 +68,7 @@ public class ITCases {
         Calendar filteredCal = new CalendarBuilder().build(new FileInputStream(outputPath));
         List<CalendarComponent> filteredComponents = filteredCal.getComponents();
         ComponentList<CalendarComponent> originalComponents = originalCal.getComponents();
-        assertEquals("Number of components", originalComponents.size() - 4L, filteredComponents.size());
+        assertEquals("Number of components", originalComponents.size() - 6L, filteredComponents.size());
         CalendarComponent duplicate = findComponentBySummary(filteredComponents, "Duplicate");
         CalendarComponent replacedEvent = findComponentBySummary(filteredComponents, "event Replace");
         assertEquals("Replaced event description", "FirstLine\nSecondLine\nThirdLine\n",

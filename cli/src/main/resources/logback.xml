@@ -26,9 +26,12 @@
 -->
 
 <configuration>
+    <!-- Insert the start time formatted like "20170208T195626" under the key "bySecond" into the logger context. -->
+    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss" timeReference="contextBirth"/>
+
+
     <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
-        <file>colander.log</file>
-        <append>true</append>
+        <file>logs/colander-${bySecond}.log</file>
         <encoder>
             <Pattern>%d{ISO8601} [%thread] %-5level %logger - %m%n</Pattern>
         </encoder>

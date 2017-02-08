@@ -13,7 +13,7 @@ JVM applications using the [API](#api).
 
 # CLI
 
-* Download the latest version from [Releases](https://github.com/schnatterer/colander/releases).
+* Download the latest version from [Releases](https://github.com/schnatterer/colander/releases) or Snapshot builds from [Jenkins](https://jenkins.schnatterer.info/job/colander/job/develop/).
 * Extract the zip file.
 * Use ist as follows:
 ```
@@ -55,7 +55,8 @@ to the CLI.
   * If no `output.ics` file is passed, colander creates one, basing on the file name and the current timestamp, e.g. `input-20170129194742.ics`.
   * Colander never overwrites existing files. If the `output.ics` exists, colander fails.
   * If you care about return codes, they can be found here: [ExitStatus](cli/src/main/java/info/schnatterer/colander/cli/ExitStatus.java))
-* Another example is the integration test for CLI (see [ColanderCliITCase](cli/src/test/java/info/schnatterer/colander/cli/ColanderCliITCase.java)). 
+* Another example is the integration test for CLI (see [ColanderCliITCase](cli/src/test/java/info/schnatterer/colander/cli/ColanderCliITCase.java)).
+* Colander CLI writes logs to the `logs` folder.
 
 # API
 

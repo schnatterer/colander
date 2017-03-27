@@ -6,7 +6,6 @@
 [![Technical Debt](https://sonarqube.com/api/badges/measure?key=info.schnatterer.colander:colander-parent&metric=sqale_debt_ratio)](https://sonarqube.com/dashboard?id=info.schnatterer.colander%3Acolander-parent)
 [![JitPack](https://www.jitpack.io/v/schnatterer/colander.svg)](https://www.jitpack.io/#schnatterer/colander)
 [![License](https://img.shields.io/github/license/schnatterer/colander.svg)](LICENSE)
-[<img alt="powered by openshift" align="right" src="https://www.openshift.com/images/logos/powered_by_openshift.png"/>](https://www.openshift.com/)
 
 Legacy Jenkins 1 and SonarQube 5 (OpenShift)  
 [![Build Status](https://jenkins.schnatterer.info/job/colander/job/develop//badge/icon)](https://jenkins.schnatterer.info/job/colander/job/develop/)

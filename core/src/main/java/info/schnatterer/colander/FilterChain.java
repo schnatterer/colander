@@ -92,7 +92,7 @@ class FilterChain {
             if (returnedEvent.isPresent()) {
                 filteredComponent = returnedEvent.get();
             } else {
-                LOG.debug("Filter {} deleted originalEvent {}. Properties={}", filter.toString(), component.getName(),
+                LOG.debug("Filter {} deleted originalEvent {}. Properties={}", filter, component.getName(),
                     component.getProperties());
                 return Optional.empty();
             }

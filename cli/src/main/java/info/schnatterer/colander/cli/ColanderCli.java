@@ -58,7 +58,9 @@ class ColanderCli {
      * @param args comand line args to parse.
      * @return an exit status to be returned to CLI.
      */
-    @SuppressWarnings("squid:S1166") // Exceptions are logged in ArgumentsParser by contract.
+    @SuppressWarnings({"squid:S1166", // Exceptions are logged in ArgumentsParser by contract.
+        "squid:S2629" // Log statements are used for console output
+    })
     ExitStatus execute(String[] args) {
         LOG.info(createProgramNameWithVersion());
         Arguments cliParams;

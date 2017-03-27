@@ -45,6 +45,7 @@ class ArgumentsParser {
      * @return an instance of {@link Arguments}
      * @throws ArgumentException on syntax error
      */
+    @SuppressWarnings("squid:S2629") // Log statements are used for console output
     public static Arguments read(String[] argv, String programName) {
         Arguments arguments = new Arguments();
         JCommander commander = new JCommander(arguments);

@@ -40,6 +40,8 @@ import static org.junit.Assert.assertTrue;
 public class ColanderCliITCase {
 
     @Rule
+    // TODO this can be moved to JUnit 5 as soon as we have a system-rules extension
+    // https://github.com/stefanbirkner/system-rules/issues/55
     public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     @Rule

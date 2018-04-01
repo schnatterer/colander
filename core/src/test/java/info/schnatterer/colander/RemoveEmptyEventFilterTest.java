@@ -28,8 +28,8 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertSame;
-import static org.junit.AssertLambda.assertEmpty;
 
 public class RemoveEmptyEventFilterTest {
     private RemoveEmptyEventFilter filter = new RemoveEmptyEventFilter();
@@ -37,21 +37,21 @@ public class RemoveEmptyEventFilterTest {
     @Test
     public void applyMatch() throws Exception {
         VEvent event = new VEvent(false);
-        assertEmpty("Unexpected filtering result", filter.apply(event));
+        assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
     public void applyMatchEmptyStrings() throws Exception {
         VEvent event = new VEvent(new Date(), "");
         event.getProperties().add(new Description(""));
-        assertEmpty("Unexpected filtering result", filter.apply(event));
+        assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
     public void applyMatchNull() throws Exception {
         VEvent event = new VEvent(new Date(), null);
         event.getProperties().add(new Description(null));
-        assertEmpty("Unexpected filtering result", filter.apply(event));
+        assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test

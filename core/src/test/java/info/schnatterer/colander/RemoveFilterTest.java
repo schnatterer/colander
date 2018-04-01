@@ -27,11 +27,9 @@ import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.AssertLambda.assertEmpty;
-import static org.junit.AssertLambda.assertOptional;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RemoveFilterTest {
 
@@ -39,21 +37,21 @@ public class RemoveFilterTest {
     public void applyMatch() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent(new Date(), "hallo icaltools");
-        assertEmpty("Unexpected filtering result", filter.apply(event));
+        assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
     public void applyNoMatch() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent(new Date(), "hullo icaltools");
-        assertOptional("Unexpected filtering result", event, filter.apply(event), Assert::assertSame);
+        assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
     public void filterSummaryDoesNotExist() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent();
-        assertOptional("Unexpected filtering result", event, filter.apply(event), Assert::assertSame);
+        assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
@@ -61,7 +59,7 @@ public class RemoveFilterTest {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent();
         event.getProperties().add(new Summary(null));
-        assertOptional("Unexpected filtering result", event, filter.apply(event), Assert::assertSame);
+        assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
 }

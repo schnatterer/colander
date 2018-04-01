@@ -28,7 +28,6 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,8 +35,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 
-import static org.junit.AssertLambda.assertEmpty;
-import static org.junit.AssertLambda.assertOptional;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class RemoveDuplicateEventFilterTest {
     private RemoveDuplicateEventFilter filter = new RemoveDuplicateEventFilter();
@@ -51,15 +50,15 @@ public class RemoveDuplicateEventFilterTest {
     @Before
     public void before() {
         // Initialize with one event
-        assertOptional("First call on apply", event, filter.apply(event), Assert::assertSame);
+        assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
     public void filterSameEvent() throws Exception {
         VEvent sameEvent = event;
 
-        assertEmpty("Second call on apply", filter.apply(event));
-        assertEmpty("Call on apply with same event instance", filter.apply(sameEvent));
+        assertThat(filter.apply(event)).isEmpty();
+        assertThat(filter.apply(sameEvent)).isEmpty();
     }
 
     @Test
@@ -68,47 +67,42 @@ public class RemoveDuplicateEventFilterTest {
             new VEvent(event.getStartDate().getDate(), event.getEndDate().getDate(), event.getSummary().getValue());
         equalEvent.getProperties().add(event.getDescription());
 
-        assertEmpty("Call on apply with other event instance, that equals", filter.apply(equalEvent));
+        assertThat(filter.apply(equalEvent)).isEmpty();
     }
 
     @Test
     public void filterDifferentSummary() throws Exception {
         VEvent differentSummary = createVEvent("DifferentSummary", "descr", startDate, endDate);
 
-        assertOptional("Call on apply with other event instance, different summary", differentSummary,
-            filter.apply(differentSummary), Assert::assertEquals);
+        assertThat(filter.apply(differentSummary)).hasValue(differentSummary);
     }
 
     @Test
     public void filterDifferentDescription() throws Exception {
         VEvent differentSummary = createVEvent("Sum", "DifferentDescr", startDate, endDate);
 
-        assertOptional("Call on apply with other event instance, different summary", differentSummary,
-            filter.apply(differentSummary), Assert::assertEquals);
+        assertThat(filter.apply(differentSummary)).hasValue(differentSummary);
     }
 
     @Test
     public void filterDifferentStartDate() throws Exception {
         VEvent differentStartDate = createVEvent("Sum", "descr", differentDate, endDate);
 
-        assertOptional("Call on apply with other event instance, different start date", differentStartDate,
-            filter.apply(differentStartDate), Assert::assertEquals);
+        assertThat(filter.apply(differentStartDate)).hasValue(differentStartDate);
     }
 
     @Test
     public void filterDifferentEndDate() throws Exception {
         VEvent differentEndDate = createVEvent("Sum", "descr", startDate, differentDate);
 
-        assertOptional("Call on apply with other event instance, different end date", differentEndDate,
-            filter.apply(differentEndDate), Assert::assertEquals);
+        assertThat(filter.apply(differentEndDate)).hasValue(differentEndDate);
     }
 
     @Test
     public void filterEndDateNull() throws Exception {
         VEvent endDateNull = new VEvent(toDate(startDate),"end date null");
 
-        assertOptional("Call on apply with other event instance, end date null", endDateNull,
-            filter.apply(endDateNull), Assert::assertEquals);
+        assertThat(filter.apply(endDateNull)).hasValue(endDateNull);
     }
 
     @Test
@@ -117,8 +111,7 @@ public class RemoveDuplicateEventFilterTest {
         startDateNull.getProperties().add(new DtEnd(toDate(endDate)));
         startDateNull.getProperties().add(new Summary("start date null"));
 
-        assertOptional("Call on apply with other event instance, start date null", startDateNull,
-            filter.apply(startDateNull), Assert::assertEquals);
+        assertThat(filter.apply(startDateNull)).hasValue(startDateNull);
     }
 
     private VEvent createVEvent(String sum, String descr, LocalDateTime startDate, LocalDateTime endDate) {

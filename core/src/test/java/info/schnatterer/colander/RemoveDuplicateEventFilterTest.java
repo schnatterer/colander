@@ -28,8 +28,8 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -38,7 +38,7 @@ import java.time.ZoneId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class RemoveDuplicateEventFilterTest {
+class RemoveDuplicateEventFilterTest {
     private RemoveDuplicateEventFilter filter = new RemoveDuplicateEventFilter();
 
     private LocalDateTime startDate = LocalDateTime.of(2012, Month.DECEMBER, 12, 13, 0);
@@ -47,14 +47,14 @@ public class RemoveDuplicateEventFilterTest {
 
     private VEvent event = createVEvent("Sum", "descr", startDate, endDate);
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         // Initialize with one event
         assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
-    public void filterSameEvent() throws Exception {
+    void filterSameEvent() throws Exception {
         VEvent sameEvent = event;
 
         assertThat(filter.apply(event)).isEmpty();
@@ -62,7 +62,7 @@ public class RemoveDuplicateEventFilterTest {
     }
 
     @Test
-    public void filterEqualEvent() throws Exception {
+    void filterEqualEvent() throws Exception {
         VEvent equalEvent =
             new VEvent(event.getStartDate().getDate(), event.getEndDate().getDate(), event.getSummary().getValue());
         equalEvent.getProperties().add(event.getDescription());
@@ -71,42 +71,42 @@ public class RemoveDuplicateEventFilterTest {
     }
 
     @Test
-    public void filterDifferentSummary() throws Exception {
+    void filterDifferentSummary() throws Exception {
         VEvent differentSummary = createVEvent("DifferentSummary", "descr", startDate, endDate);
 
         assertThat(filter.apply(differentSummary)).hasValue(differentSummary);
     }
 
     @Test
-    public void filterDifferentDescription() throws Exception {
+    void filterDifferentDescription() throws Exception {
         VEvent differentSummary = createVEvent("Sum", "DifferentDescr", startDate, endDate);
 
         assertThat(filter.apply(differentSummary)).hasValue(differentSummary);
     }
 
     @Test
-    public void filterDifferentStartDate() throws Exception {
+    void filterDifferentStartDate() throws Exception {
         VEvent differentStartDate = createVEvent("Sum", "descr", differentDate, endDate);
 
         assertThat(filter.apply(differentStartDate)).hasValue(differentStartDate);
     }
 
     @Test
-    public void filterDifferentEndDate() throws Exception {
+    void filterDifferentEndDate() throws Exception {
         VEvent differentEndDate = createVEvent("Sum", "descr", startDate, differentDate);
 
         assertThat(filter.apply(differentEndDate)).hasValue(differentEndDate);
     }
 
     @Test
-    public void filterEndDateNull() throws Exception {
+    void filterEndDateNull() throws Exception {
         VEvent endDateNull = new VEvent(toDate(startDate),"end date null");
 
         assertThat(filter.apply(endDateNull)).hasValue(endDateNull);
     }
 
     @Test
-    public void filterStartDateNull() throws Exception {
+    void filterStartDateNull() throws Exception {
         VEvent startDateNull = new VEvent();
         startDateNull.getProperties().add(new DtEnd(toDate(endDate)));
         startDateNull.getProperties().add(new Summary("start date null"));

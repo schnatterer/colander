@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Constants used for testing in all modules.
@@ -68,25 +68,26 @@ public class ITCases {
         Calendar filteredCal = new CalendarBuilder().build(new FileInputStream(outputPath));
         List<CalendarComponent> filteredComponents = filteredCal.getComponents();
         ComponentList<CalendarComponent> originalComponents = originalCal.getComponents();
-        assertEquals("Number of components", originalComponents.size() - 6L, filteredComponents.size());
+        assertEquals(originalComponents.size() - 6L, filteredComponents.size(), "Number of components");
         CalendarComponent duplicate = findComponentBySummary(filteredComponents, "Duplicate");
         CalendarComponent replacedEvent = findComponentBySummary(filteredComponents, "event Replace");
-        assertEquals("Replaced event description", "FirstLine\nSecondLine\nThirdLine\n",
-            replacedEvent.getProperty(Property.DESCRIPTION).getValue());
-        assertEquals("Replaced event summary", "event Replace!",
-            replacedEvent.getProperty(Property.SUMMARY).getValue());
+        assertEquals("FirstLine\nSecondLine\nThirdLine\n",
+            replacedEvent.getProperty(Property.DESCRIPTION).getValue(), "Replaced event description");
+        assertEquals("event Replace!",
+            replacedEvent.getProperty(Property.SUMMARY).getValue(), "Replaced event summary");
 
         CalendarComponent replacedToDo = findComponentBySummary(filteredComponents, "TDO Replace");
-        assertEquals("Replaced todo summary", "TDO Replace!",
-            replacedToDo.getProperty(Property.SUMMARY).getValue());
+        assertEquals("TDO Replace!",
+            replacedToDo.getProperty(Property.SUMMARY).getValue(), "Replaced todo summary");
 
         // Check unfiltered components
         Set<CalendarComponent> changedComponents = new HashSet<>(Arrays.asList(duplicate, replacedEvent, replacedToDo));
         filteredComponents.stream()
             .filter(component -> !changedComponents.contains(component))
             .forEach(unchangedComponent ->
-                assertTrue("Unfiltered calender component not found in inut calender. Was it changed? Component: "
-                + unchangedComponent, originalComponents.contains(unchangedComponent)));
+                assertTrue(originalComponents.contains(unchangedComponent),
+                "Unfiltered calender component not found in inut calender. Was it changed? Component: "
+                    + unchangedComponent));
     }
 
     /**
@@ -108,7 +109,7 @@ public class ITCases {
         List<CalendarComponent> filteredEvents = events.stream()
             .filter(event -> Properties.getSummaryValue(event).map(value -> value.contains(summaryContains)).orElse(false))
             .collect(Collectors.toList());
-        assertEquals("Expected number of events with summary: " + summaryContains, 1, filteredEvents.size());
+        assertEquals(1, filteredEvents.size(), "Expected number of events with summary: " + summaryContains);
         return filteredEvents.get(0);
     }
 

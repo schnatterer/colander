@@ -28,25 +28,21 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
-import org.hamcrest.junit.ExpectedException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class ReplaceFilterTest {
+class ReplaceFilterTest {
     private Date expectedDate = new Date();
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     @Test
-    public void filterChangesOnMatch() throws Exception {
+    void filterChangesOnMatch() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("h.*llo", "hullo", Property.SUMMARY);
         VEvent event = new VEvent(expectedDate, "hallo icaltools");
         VEvent expectedEvent = new VEvent(expectedDate, "hullo icaltools");
@@ -54,14 +50,14 @@ public class ReplaceFilterTest {
     }
 
     @Test
-    public void filterIgnoresWhenNoMatch() throws Exception {
+    void filterIgnoresWhenNoMatch() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("hallo", "hullo", Property.SUMMARY);
         VEvent event = new VEvent(new Date(), "hullo icaltools");
         assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
-    public void filterDescription() throws Exception {
+    void filterDescription() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("h.*llo", "hullo", Property.DESCRIPTION);
         VEvent event = createVEvent(expectedDate, "hallo icaltools");
         VEvent expectedEvent = createVEvent(expectedDate, "hullo icaltools");
@@ -69,14 +65,14 @@ public class ReplaceFilterTest {
     }
 
     @Test
-    public void filterPropertyDoesNotExist() throws Exception {
+    void filterPropertyDoesNotExist() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("hallo", "hullo", Property.DESCRIPTION);
         VEvent event = new VEvent(expectedDate, "hullo icaltools");
         // Unfiltered
         assertThat(filter.apply(event)).hasValue(event);
     }
     @Test
-    public void filterPropertyDoesHaveValue() throws Exception {
+    void filterPropertyDoesHaveValue() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("hallo", "hullo", Property.SUMMARY);
         VEvent event = new VEvent(expectedDate, null);
         // Unfiltered
@@ -84,17 +80,17 @@ public class ReplaceFilterTest {
     }
 
     @Test
-    public void filterIOException() throws Exception {
+    void filterIOException() throws Exception {
         testException(new IOException("mocked Message"));
     }
 
     @Test
-    public void filterURISyntaxException() throws Exception {
+    void filterURISyntaxException() throws Exception {
         testException(new URISyntaxException("uri", "mocked Message"));
     }
 
     @Test
-    public void filterParseException() throws Exception {
+    void filterParseException() throws Exception {
         testException(new ParseException("mocked Message", 42));
     }
 
@@ -110,9 +106,12 @@ public class ReplaceFilterTest {
         ReplaceFilter filter = spy(new ReplaceFilter("", "", Property.SUMMARY));
         doThrow(exception).when(filter).replace(any());
 
-        expectedException.expect(ColanderParserException.class);
-        expectedException.expectMessage(expectedMessage);
 
-        filter.apply(new VEvent(false));
+        ColanderParserException actualException = assertThrows(ColanderParserException.class,
+            () ->  filter.apply(new VEvent(false)));
+
+        assertThat(actualException.getMessage()).contains(expectedMessage);
+
+
     }
 }

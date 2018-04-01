@@ -23,34 +23,37 @@
  */
 package info.schnatterer.colander.test;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@EnableRuleMigrationSupport
 public class ITCasesTest {
     private static final String ICS_FILE_EXPECTED = "ColanderIT-expected.ics";
 
-    @ClassRule
+    @Rule
     public static TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void verifyParsedIcs() throws Exception {
+    void verifyParsedIcs() throws Exception {
         // No exception means success
         ITCases.verifyParsedIcs(ITCases.getFilePathTestIcs(folder),
             ITCases.getFilePathTestIcs(ICS_FILE_EXPECTED, folder));
     }
 
     @Test
-    public void getFilePathTestIcs() throws Exception {
+    void getFilePathTestIcs() throws Exception {
         // Assert Written in .tmp file
         assertThat(ITCases.getFilePathTestIcs(folder), containsString("tmp"));
     }
 
-    @Test(expected = AssertionError.class)
-    public void getFilePathTestIcsNotPresent() throws Exception {
-        ITCases.getFilePathTestIcs("Not exists", folder);
+    @Test
+    void getFilePathTestIcsNotPresent() {
+        assertThrows(AssertionError.class, () -> ITCases.getFilePathTestIcs("Not exists", folder));
     }
 }

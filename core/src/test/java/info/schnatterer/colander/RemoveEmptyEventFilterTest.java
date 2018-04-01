@@ -26,56 +26,56 @@ package info.schnatterer.colander;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertSame;
 
-public class RemoveEmptyEventFilterTest {
+class RemoveEmptyEventFilterTest {
     private RemoveEmptyEventFilter filter = new RemoveEmptyEventFilter();
 
     @Test
-    public void applyMatch() throws Exception {
+    void applyMatch() throws Exception {
         VEvent event = new VEvent(false);
         assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
-    public void applyMatchEmptyStrings() throws Exception {
+    void applyMatchEmptyStrings() throws Exception {
         VEvent event = new VEvent(new Date(), "");
         event.getProperties().add(new Description(""));
         assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
-    public void applyMatchNull() throws Exception {
+    void applyMatchNull() throws Exception {
         VEvent event = new VEvent(new Date(), null);
         event.getProperties().add(new Description(null));
         assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
-    public void applyDescriptionEmpty() throws Exception {
+    void applyDescriptionEmpty() throws Exception {
         VEvent event = new VEvent(new Date(), "sumry");
         assertSame("Unexpected filtering result", event, filter.apply(event).orElse(null));
     }
 
     @Test
-    public void applySummaryEmpty() throws Exception {
+    void applySummaryEmpty() throws Exception {
         VEvent event = new VEvent(false);
         event.getProperties().add(new Description("descr"));
         assertSame("Unexpected filtering result", event, filter.apply(event).orElse(null));
     }
 
     @Test
-    public void applySummaryNull() throws Exception {
+    void applySummaryNull() throws Exception {
         VEvent event = new VEvent(new Date(), null);
         event.getProperties().add(new Description("desc"));
         assertSame("Unexpected filtering result", event, filter.apply(event).orElse(null));
     }
 
     @Test
-    public void applyDescriptionNull() throws Exception {
+    void applyDescriptionNull() throws Exception {
         VEvent event = new VEvent(new Date(), "sumry");
         event.getProperties().add(new Description(null));
         assertSame("Unexpected filtering result", event, filter.apply(event).orElse(null));

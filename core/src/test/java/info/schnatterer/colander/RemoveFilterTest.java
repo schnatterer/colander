@@ -27,35 +27,35 @@ import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RemoveFilterTest {
+class RemoveFilterTest {
 
     @Test
-    public void applyMatch() throws Exception {
+    void applyMatch() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent(new Date(), "hallo icaltools");
         assertThat(filter.apply(event)).isEmpty();
     }
 
     @Test
-    public void applyNoMatch() throws Exception {
+    void applyNoMatch() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent(new Date(), "hullo icaltools");
         assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
-    public void filterSummaryDoesNotExist() throws Exception {
+    void filterSummaryDoesNotExist() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent();
         assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
-    public void filterSummaryDoesHaveValue() throws Exception {
+    void filterSummaryDoesHaveValue() throws Exception {
         RemoveFilter filter = new RemoveFilter("hallo", Property.SUMMARY);
         VEvent event = new VEvent();
         event.getProperties().add(new Summary(null));

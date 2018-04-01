@@ -28,8 +28,8 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.*;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -43,21 +43,21 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class FilterChainTest {
+class FilterChainTest {
 
     private ColanderFilter passThroughFilter1 = mock(ColanderFilter.class);
     private ColanderFilter passThroughFilter2 = mock(ColanderFilter.class);
     private VEvent inputEvent = new VEvent();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         when(passThroughFilter1.apply(any(VEvent.class))).thenAnswer(new PassThroughAnswer());
         when(passThroughFilter2.apply(any(VEvent.class))).thenAnswer(new PassThroughAnswer());
         inputEvent.getProperties().add(new Summary(""));
     }
 
     @Test
-    public void testParse() {
+    void testParse() {
         FilterChain pipe = new FilterChain(Arrays.asList(passThroughFilter1, passThroughFilter2));
 
         VEvent event1 = new VEvent(new Date(), "event1");
@@ -81,7 +81,7 @@ public class FilterChainTest {
     }
 
     @Test
-    public void testParseDelete() {
+    void testParseDelete() {
 
         VEvent event1 = new VEvent(new Date(), "event1");
         VEvent event2 = new VEvent(new Date(), "event2");
@@ -107,7 +107,7 @@ public class FilterChainTest {
     }
 
     @Test
-    public void testFilterEvent() {
+    void testFilterEvent() {
         FilterChain pipe = new FilterChain(Arrays.asList(passThroughFilter1, passThroughFilter2));
 
         Optional<CalendarComponent> actualFilteredEvent = pipe.filterEvent(inputEvent);
@@ -117,7 +117,7 @@ public class FilterChainTest {
     }
 
     @Test
-    public void testFilterEventDelete() {
+    void testFilterEventDelete() {
         ColanderFilter filter2 = mock(ColanderFilter.class);
         FilterChain pipe = new FilterChain(Arrays.asList(passThroughFilter1, filter2, passThroughFilter2));
 

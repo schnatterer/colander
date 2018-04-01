@@ -40,10 +40,10 @@ import static org.junit.Assert.assertTrue;
 public class ColanderCliITCase {
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     @Rule
-    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
     public void endToEnd() throws Exception {

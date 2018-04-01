@@ -1,9 +1,9 @@
 # 📆 colander - filtering your calendar 
 
 [![Build Status](https://travis-ci.org/schnatterer/colander.svg?branch=develop)](https://travis-ci.org/schnatterer/colander)
-[![Quality Gates](https://sonarqube.com/api/badges/gate?key=info.schnatterer.colander:colander-parent)](https://sonarqube.com/dashboard?id=info.schnatterer.colander%3Acolander-parent)
-[![Coverage](https://sonarqube.com/api/badges/measure?key=info.schnatterer.colander:colander-parent&metric=coverage)](https://sonarqube.com/dashboard?id=info.schnatterer.colander%3Acolander-parent)
-[![Technical Debt](https://sonarqube.com/api/badges/measure?key=info.schnatterer.colander:colander-parent&metric=sqale_debt_ratio)](https://sonarqube.com/dashboard?id=info.schnatterer.colander%3Acolander-parent)
+[![Quality Gates](https://sonarqube.com/api/badges/gate?key=info.schnatterer.colander:colander-parent)](https://sonarcloud.io/dashboard?id=info.schnatterer.colander%3Acolander-parent)
+[![Coverage](https://sonarqube.com/api/badges/measure?key=info.schnatterer.colander:colander-parent&metric=coverage)](https://sonarcloud.io/dashboard?id=info.schnatterer.colander%3Acolander-parent)
+[![Technical Debt](https://sonarqube.com/api/badges/measure?key=info.schnatterer.colander:colander-parent&metric=sqale_debt_ratio)](https://sonarcloud.io/dashboard?id=info.schnatterer.colander%3Acolander-parent)
 [![JitPack](https://www.jitpack.io/v/schnatterer/colander.svg)](https://www.jitpack.io/#schnatterer/colander)
 [![License](https://img.shields.io/github/license/schnatterer/colander.svg)](LICENSE)
 

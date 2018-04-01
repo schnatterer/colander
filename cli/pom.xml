@@ -80,9 +80,9 @@
         </dependency>
 
         <dependency>
-            <groupId>uk.org.lidalia</groupId>
-            <artifactId>slf4j-test</artifactId>
-            <version>1.2.0</version>
+            <groupId>com.github.schnatterer</groupId>
+            <artifactId>logback-spike</artifactId>
+            <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
 

@@ -23,36 +23,25 @@
  */
 package info.schnatterer.colander.cli;
 
+import com.thekua.spikes.LogbackCapturingAppender;
 import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
-import org.hamcrest.junit.ExpectedException;
-import org.junit.Rule;
-import org.junit.Test;
-import uk.org.lidalia.slf4jtest.LoggingEvent;
-import uk.org.lidalia.slf4jtest.TestLogger;
-import uk.org.lidalia.slf4jtest.TestLoggerFactory;
-import uk.org.lidalia.slf4jtest.TestLoggerFactoryResetRule;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ArgumentsParserTest {
+class ArgumentsParserTest {
     private static final String PROGRAM_NAME = "progr";
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     /** Logger of class under test. */
-    private static final TestLogger LOG = TestLoggerFactory.getTestLogger(ArgumentsParser.class);
-
-    /** Rest logger before each test. **/
-    @Rule
-    public TestLoggerFactoryResetRule testLoggerFactoryResetRule = new TestLoggerFactoryResetRule();
+    private final LogbackCapturingAppender log = LogbackCapturingAppender.weaveInto(ArgumentsParser.LOG);
 
     @Test
-    public void read() throws Exception {
+    void read() throws Exception {
         Arguments args = read("input", "output");
 
         assertEquals("Input file", "input", args.getInputFile());
@@ -66,21 +55,21 @@ public class ArgumentsParserTest {
     }
 
     @Test
-    public void readInputOnly() throws Exception {
+    void readInputOnly() throws Exception {
         Arguments args = read("input");
         assertEquals("Input file", "input", args.getInputFile());
         assertNull("Output file", args.getOutputFile());
     }
 
     @Test
-    public void readNoMainArgs() throws Exception {
-        expectedException.expect(ArgumentException.class);
-        expectedException.expectMessage("Main parameters");
-        read("");
+    void readNoMainArgs() throws Exception {
+        ArgumentException actualException = assertThrows(ArgumentException.class,() -> read(""));
+
+        assertThat(actualException.getMessage(), containsString("Main parameters"));
     }
 
     @Test
-    public void readReplaceInSummary() throws Exception {
+    void readReplaceInSummary() throws Exception {
         Map<String, String> replaceInSummary =
             read("--replace-summary a=b", "--replace-summary", "\"\\r(?!\\n)=\\r\\n\"", "input", "output")
                 .getReplaceInSummary();
@@ -90,7 +79,7 @@ public class ArgumentsParserTest {
     }
 
     @Test
-    public void readReplaceInDescription() throws Exception {
+    void readReplaceInDescription() throws Exception {
         Map<String, String> replaceInDescription =
             read("--replace-description a=b", "--replace-description", "\"\\r(?!\\n)=\\r\\n\"", "input", "output")
                 .getReplaceInDescription();
@@ -100,7 +89,7 @@ public class ArgumentsParserTest {
     }
 
     @Test
-    public void readRemoveSummaryContains() throws Exception {
+    void readRemoveSummaryContains() throws Exception {
         List<String> removeSummaryContainsMultiple =
             read("--remove-summary", "a", "--remove-summary", "\"b c\"", "input", "output").getRemoveSummaryContains();
         List<String> removeSummaryContainsCommaSyntax =
@@ -111,7 +100,7 @@ public class ArgumentsParserTest {
     }
 
     @Test
-    public void readRemoveDescriptionContains() throws Exception {
+    void readRemoveDescriptionContains() throws Exception {
         List<String> removeDescriptionContainsMultiple =
             read("--remove-description", "a", "--remove-description", "\"b c\"", "input", "output").getRemoveDescriptionContains();
         List<String> removeDescriptionContainsCommaSyntax =
@@ -122,21 +111,21 @@ public class ArgumentsParserTest {
     }
 
     @Test
-    public void readRemoveDuplicates() {
+    void readRemoveDuplicates() {
         Arguments read = read("--remove-duplicate-events", "input", "output");
         assertTrue("Remove duplicates", read.isRemoveDuplicateEvents());
     }
 
     @Test
-    public void readRemoveEmpty() {
+    void readRemoveEmpty() {
         assertTrue("Remove empty", read("--remove-empty-events", "input", "output").isRemoveEmptyEvents());
     }
 
     @Test
-    public void readHelp() throws Exception {
+    void readHelp() throws Exception {
         assertTrue("Unexpected return on read()", read("input", "output", "--help").isHelp());
-        assertThat("Unexpected log message", getLogEvent(0).getMessage(), containsString("Usage"));
-        assertThat("Unexpected log message", getLogEvent(0).getMessage(), containsString(PROGRAM_NAME));
+        assertThat("Unexpected log message", getLogEvent(0), containsString("Usage"));
+        assertThat("Unexpected log message", getLogEvent(0), containsString(PROGRAM_NAME));
     }
 
     private Arguments read(String... argv) {
@@ -146,8 +135,8 @@ public class ArgumentsParserTest {
     /**
      * @return the logging event at <code>index</code>. Fails if not enough logging events present.
      */
-    private LoggingEvent getLogEvent(int index) {
-        assertThat("Unexpected number of Log messages", LOG.getLoggingEvents().size(), greaterThan(index));
-        return LOG.getLoggingEvents().get(index);
+    private String getLogEvent(int index) {
+        assertThat("Unexpected number of Log messages", log.getCapturedLogMessages().size(), greaterThan(index));
+        return log.getCapturedLogMessages().get(index);
     }
 }

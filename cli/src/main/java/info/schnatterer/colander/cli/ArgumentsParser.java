@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * Parser for CLI-arguments
  */
 class ArgumentsParser {
-    private static final Logger LOG = LoggerFactory.getLogger(ArgumentsParser.class);
+    static final Logger LOG = LoggerFactory.getLogger(ArgumentsParser.class);
 
     /** Use {@link #read(String[], String)} instead of constructor. */
     ArgumentsParser() {

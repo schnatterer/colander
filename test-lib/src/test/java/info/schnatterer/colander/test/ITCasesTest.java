@@ -28,9 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @EnableRuleMigrationSupport
 public class ITCasesTest {
@@ -49,7 +48,7 @@ public class ITCasesTest {
     @Test
     void getFilePathTestIcs() throws Exception {
         // Assert Written in .tmp file
-        assertThat(ITCases.getFilePathTestIcs(folder), containsString("tmp"));
+        assertThat(ITCases.getFilePathTestIcs(folder)).contains("tmp");
     }
 
     @Test

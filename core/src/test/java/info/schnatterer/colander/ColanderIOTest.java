@@ -45,15 +45,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class ColanderIOTest {
@@ -86,7 +83,7 @@ class ColanderIOTest {
         ColanderParserException actualException = assertThrows(ColanderParserException.class,
             () -> io.read(mock(InputStream.class)));
 
-       assertEquals(expectedException.getMessage(), actualException.getMessage());
+        assertEquals(expectedException.getMessage(), actualException.getMessage());
     }
 
     @Test
@@ -105,7 +102,7 @@ class ColanderIOTest {
         outStream = mock(OutputStream.class, new ThrowValidationExceptionOnEachMethodCall(expectedMessage));
 
         ColanderParserException actualException = assertThrows(ColanderParserException.class,
-            () ->  io.write(mock(Calendar.class), expectedFile, null));
+            () -> io.write(mock(Calendar.class), expectedFile, null));
 
         assertEquals(expectedMessage, actualException.getMessage());
         System.out.println(mockingDetails(outStream).getInvocations());
@@ -117,8 +114,8 @@ class ColanderIOTest {
         LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
         io.write(mock(Calendar.class), null, "a/b.someEnding");
 
-        assertThat(outputPath, startsWith("a/b"));
-        assertThat(outputPath, endsWith(".someEnding"));
+        assertThat(outputPath).startsWith("a/b");
+        assertThat(outputPath).endsWith(".someEnding");
 
         verifyDateInNewFileName(outputPath, dateBefore, "\\.someEnding");
     }
@@ -130,7 +127,7 @@ class ColanderIOTest {
 
         io.write(expectedCalendar, null, "a/b");
 
-        assertThat(outputPath, startsWith("a/b"));
+        assertThat(outputPath).startsWith("a/b");
 
         verifyDateInNewFileName(outputPath, dateBefore, "");
     }
@@ -150,7 +147,7 @@ class ColanderIOTest {
         ColanderParserException actualException = assertThrows(ColanderParserException.class,
             () -> io.write(mock(Calendar.class), null, null));
 
-        assertThat(actualException.getMessage(), containsString("Both input and output file paths are null"));
+        assertThat(actualException.getMessage()).contains("Both input and output file paths are null");
     }
 
     /**
@@ -189,10 +186,14 @@ class ColanderIOTest {
 
     private class ColanderIOForTest extends ColanderIO {
         @Override
-        CalendarBuilder createCalenderBuilder() { return builder; }
+        CalendarBuilder createCalenderBuilder() {
+            return builder;
+        }
 
         @Override
-        CalendarOutputter createCalendarOutputter() { return outputter; }
+        CalendarOutputter createCalendarOutputter() {
+            return outputter;
+        }
 
         @Override
         OutputStream createOutputStream(String outputFile) throws FileNotFoundException {

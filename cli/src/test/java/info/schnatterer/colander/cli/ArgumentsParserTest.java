@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ArgumentsParserTest {
     private static final String PROGRAM_NAME = "progr";
@@ -65,7 +65,7 @@ class ArgumentsParserTest {
     void readNoMainArgs() throws Exception {
         ArgumentException actualException = assertThrows(ArgumentException.class,() -> read(""));
 
-        assertThat(actualException.getMessage(), containsString("Main parameters"));
+        assertThat(actualException.getMessage()).contains("Main parameters");
     }
 
     @Test
@@ -73,8 +73,8 @@ class ArgumentsParserTest {
         Map<String, String> replaceInSummary =
             read("--replace-summary a=b", "--replace-summary", "\"\\r(?!\\n)=\\r\\n\"", "input", "output")
                 .getReplaceInSummary();
-        assertThat(replaceInSummary, hasEntry("a", "b"));
-        assertThat(replaceInSummary, hasEntry("\\r(?!\\n)", "\\r\\n"));
+        assertThat(replaceInSummary).containsValues("a", "b");
+        assertThat(replaceInSummary).containsValues("\\r(?!\\n)", "\\r\\n");
         assertEquals("Unexpected amount of replace arguments", 2, replaceInSummary.size());
     }
 
@@ -83,8 +83,8 @@ class ArgumentsParserTest {
         Map<String, String> replaceInDescription =
             read("--replace-description a=b", "--replace-description", "\"\\r(?!\\n)=\\r\\n\"", "input", "output")
                 .getReplaceInDescription();
-        assertThat(replaceInDescription, hasEntry("a", "b"));
-        assertThat(replaceInDescription, hasEntry("\\r(?!\\n)", "\\r\\n"));
+        assertThat(replaceInDescription).containsValues("a", "b");
+        assertThat(replaceInDescription).containsValues("\\r(?!\\n)", "\\r\\n");
         assertEquals("Unexpected amount of replace arguments", 2, replaceInDescription.size());
     }
 
@@ -94,7 +94,7 @@ class ArgumentsParserTest {
             read("--remove-summary", "a", "--remove-summary", "\"b c\"", "input", "output").getRemoveSummaryContains();
         List<String> removeSummaryContainsCommaSyntax =
             read("--remove-summary", "\"a,b c\"", "input", "output").getRemoveSummaryContains();
-        assertThat(removeSummaryContainsMultiple, contains("a", "b c"));
+        assertThat(removeSummaryContainsMultiple).contains("a", "b c");
         assertEquals("Unexpected amount of replace arguments", 2, removeSummaryContainsMultiple.size());
         assertEquals("Multiple parameter syntax and comma syntax are not the same", removeSummaryContainsCommaSyntax, removeSummaryContainsMultiple);
     }
@@ -105,7 +105,7 @@ class ArgumentsParserTest {
             read("--remove-description", "a", "--remove-description", "\"b c\"", "input", "output").getRemoveDescriptionContains();
         List<String> removeDescriptionContainsCommaSyntax =
             read("--remove-description", "\"a,b c\"", "input", "output").getRemoveDescriptionContains();
-        assertThat(removeDescriptionContainsMultiple, contains("a", "b c"));
+        assertThat(removeDescriptionContainsMultiple).contains("a", "b c");
         assertEquals("Unexpected amount of replace arguments", 2, removeDescriptionContainsMultiple.size());
         assertEquals("Multiple parameter syntax and comma syntax are not the same", removeDescriptionContainsCommaSyntax, removeDescriptionContainsMultiple);
     }
@@ -124,8 +124,8 @@ class ArgumentsParserTest {
     @Test
     void readHelp() throws Exception {
         assertTrue("Unexpected return on read()", read("input", "output", "--help").isHelp());
-        assertThat("Unexpected log message", getLogEvent(0), containsString("Usage"));
-        assertThat("Unexpected log message", getLogEvent(0), containsString(PROGRAM_NAME));
+        assertThat(getLogEvent(0)).contains("Usage");
+        assertThat(getLogEvent(0)).contains(PROGRAM_NAME);
     }
 
     private Arguments read(String... argv) {
@@ -136,7 +136,7 @@ class ArgumentsParserTest {
      * @return the logging event at <code>index</code>. Fails if not enough logging events present.
      */
     private String getLogEvent(int index) {
-        assertThat("Unexpected number of Log messages", log.getCapturedLogMessages().size(), greaterThan(index));
+        assertThat(log.getCapturedLogMessages()).size().isGreaterThan(index);
         return log.getCapturedLogMessages().get(index);
     }
 }

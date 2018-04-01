@@ -46,6 +46,7 @@
         <slf4j.version>1.7.22</slf4j.version>
         <logback.version>1.1.8</logback.version>
         <jacoco.version>0.7.8</jacoco.version>
+        <junit5.version>5.1.0</junit5.version>
     </properties>
 
     <modules>
@@ -74,10 +75,12 @@
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
             </dependency>
+
+            <!-- JUnit 4 dependencies -->
             <dependency>
                 <groupId>org.junit.vintage</groupId>
                 <artifactId>junit-vintage-engine</artifactId>
-                <version>5.1.0</version>
+                <version>${junit5.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -89,10 +92,19 @@
                 <artifactId>hamcrest-junit</artifactId>
                 <version>2.0.0.0</version>
             </dependency>
+
+            <!-- Junit 5 dependencies -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit5.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <!-- JUnit 4 dependencies -->
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
@@ -106,6 +118,13 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Junit 5 dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -187,6 +206,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.1.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

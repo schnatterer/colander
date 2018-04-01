@@ -27,56 +27,57 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-public class PropertiesTest {
-    CalendarComponent calendarComponent = new VEvent();
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class PropertiesTest {
+    private CalendarComponent calendarComponent = new VEvent();
 
     @Test
-    public void getProperty() throws Exception {
+    void getProperty() throws Exception {
         Summary expectedSummary = new Summary("value");
         calendarComponent.getProperties().add(expectedSummary);
-        Assert.assertEquals(expectedSummary, Properties.getSummary(calendarComponent).orElse(null));
+        assertEquals(expectedSummary, Properties.getSummary(calendarComponent).orElse(null));
     }
 
     @Test
-    public void getPropertyNoSummary() throws Exception {
-        Assert.assertEquals(Optional.empty(), Properties.getSummary(calendarComponent));
+    void getPropertyNoSummary() throws Exception {
+        assertEquals(Optional.empty(), Properties.getSummary(calendarComponent));
     }
 
     @Test
-    public void getPropertyValue() throws Exception {
+    void getPropertyValue() throws Exception {
         String expectedValue = "val";
         calendarComponent.getProperties().add(new Summary(expectedValue));
-        Assert.assertEquals(expectedValue, Properties.getSummaryValue(calendarComponent).orElse(null));
+        assertEquals(expectedValue, Properties.getSummaryValue(calendarComponent).orElse(null));
     }
 
     @Test
-    public void getPropertyValueNoSummary() throws Exception {
-        Assert.assertEquals(Optional.empty(), Properties.getSummaryValue(calendarComponent));
+    void getPropertyValueNoSummary() throws Exception {
+        assertEquals(Optional.empty(), Properties.getSummaryValue(calendarComponent));
     }
 
     @Test
-    public void getPropertyValueNoSummaryValue() throws Exception {
+    void getPropertyValueNoSummaryValue() throws Exception {
         Summary expectedSummary = new Summary(null);
         calendarComponent.getProperties().add(expectedSummary);
-        Assert.assertEquals(Optional.empty(), Properties.getSummaryValue(calendarComponent));
+        assertEquals(Optional.empty(), Properties.getSummaryValue(calendarComponent));
     }
 
     @Test
-    public void getDescription() throws Exception {
+    void getDescription() throws Exception {
         Description expectedDescription = new Description("value");
         calendarComponent.getProperties().add(expectedDescription);
-        Assert.assertEquals(expectedDescription, Properties.getDescription(calendarComponent).orElse(null));
+        assertEquals(expectedDescription, Properties.getDescription(calendarComponent).orElse(null));
     }
 
     @Test
-    public void getDescriptionValue() throws Exception {
+    void getDescriptionValue() throws Exception {
         String expectedValue = "val";
         calendarComponent.getProperties().add(new Description(expectedValue));
-        Assert.assertEquals(expectedValue, Properties.getDescriptionValue(calendarComponent).orElse(null));
+        assertEquals(expectedValue, Properties.getDescriptionValue(calendarComponent).orElse(null));
     }
 }

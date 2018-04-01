@@ -28,7 +28,6 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.*;
 import net.fortuna.ical4j.model.property.Summary;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -38,10 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.AssertLambda.assertEmpty;
-import static org.junit.AssertLambda.assertOptional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -115,7 +113,7 @@ public class FilterChainTest {
         Optional<CalendarComponent> actualFilteredEvent = pipe.filterEvent(inputEvent);
         verify(passThroughFilter1).apply(inputEvent);
         verify(passThroughFilter2).apply(inputEvent);
-        assertOptional("Unexpected filtered event", inputEvent, actualFilteredEvent, Assert::assertEquals);
+        assertThat(actualFilteredEvent).hasValue(inputEvent);
     }
 
     @Test
@@ -127,7 +125,7 @@ public class FilterChainTest {
         verify(passThroughFilter1).apply(inputEvent);
         verify(filter2).apply(inputEvent);
         verify(passThroughFilter2, never()).apply(inputEvent);
-        assertEmpty("Event not deleted", vEvent);
+        assertThat(vEvent).withFailMessage("Event not deleted").isEmpty();
     }
 
     private static class PassThroughAnswer implements Answer<Optional<CalendarComponent>> {

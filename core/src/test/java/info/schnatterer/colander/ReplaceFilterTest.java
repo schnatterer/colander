@@ -29,7 +29,6 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
 import org.hamcrest.junit.ExpectedException;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -37,7 +36,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
-import static org.junit.AssertLambda.assertOptional;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class ReplaceFilterTest {
@@ -51,14 +50,14 @@ public class ReplaceFilterTest {
         ReplaceFilter filter = new ReplaceFilter("h.*llo", "hullo", Property.SUMMARY);
         VEvent event = new VEvent(expectedDate, "hallo icaltools");
         VEvent expectedEvent = new VEvent(expectedDate, "hullo icaltools");
-        assertOptional("Unexpected filtering result", expectedEvent, filter.apply(event), Assert::assertEquals);
+        assertThat(filter.apply(event)).hasValue(expectedEvent);
     }
 
     @Test
     public void filterIgnoresWhenNoMatch() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("hallo", "hullo", Property.SUMMARY);
         VEvent event = new VEvent(new Date(), "hullo icaltools");
-        assertOptional("Unexpected filtering result", event, filter.apply(event), Assert::assertSame);
+        assertThat(filter.apply(event)).hasValueSatisfying(actual -> assertThat(actual).isSameAs(event));
     }
 
     @Test
@@ -66,7 +65,7 @@ public class ReplaceFilterTest {
         ReplaceFilter filter = new ReplaceFilter("h.*llo", "hullo", Property.DESCRIPTION);
         VEvent event = createVEvent(expectedDate, "hallo icaltools");
         VEvent expectedEvent = createVEvent(expectedDate, "hullo icaltools");
-        assertOptional("Unexpected filtering result", expectedEvent, filter.apply(event), Assert::assertEquals);
+        assertThat(filter.apply(event)).hasValue(expectedEvent);
     }
 
     @Test
@@ -74,14 +73,14 @@ public class ReplaceFilterTest {
         ReplaceFilter filter = new ReplaceFilter("hallo", "hullo", Property.DESCRIPTION);
         VEvent event = new VEvent(expectedDate, "hullo icaltools");
         // Unfiltered
-        assertOptional("Unexpected filtering result", event, filter.apply(event), Assert::assertEquals);
+        assertThat(filter.apply(event)).hasValue(event);
     }
     @Test
     public void filterPropertyDoesHaveValue() throws Exception {
         ReplaceFilter filter = new ReplaceFilter("hallo", "hullo", Property.SUMMARY);
         VEvent event = new VEvent(expectedDate, null);
         // Unfiltered
-        assertOptional("Unexpected filtering result", event, filter.apply(event), Assert::assertEquals);
+        assertThat(filter.apply(event)).hasValue(event);
     }
 
     @Test

@@ -36,9 +36,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.isA;
-import static org.junit.AssertLambda.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -56,13 +55,13 @@ public class ColanderTest {
     @Test
     public void removeDuplicates() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeDuplicateEvents();
-        assertThat(colanderBuilder.filters, hasItem(isA(RemoveDuplicateEventFilter.class)));
+        assertThat(colanderBuilder.filters).first().isOfAnyClassIn(RemoveDuplicateEventFilter.class);
     }
 
     @Test
     public void removeEmptyEvents() throws Exception {
         ColanderBuilder colanderBuilder = Colander.toss(expectedFilePath).removeEmptyEvents();
-        assertThat(colanderBuilder.filters, hasItem(isA(RemoveEmptyEventFilter.class)));
+        assertThat(colanderBuilder.filters).first().isOfAnyClassIn(RemoveEmptyEventFilter.class);
     }
 
     @Test
@@ -124,7 +123,7 @@ public class ColanderTest {
         allFilters.forEach(
             filter -> {
                 VEvent event = mock(VEvent.class);
-                assertEmpty("Filter returned unexpected value.", filter.apply(event));
+                assertThat(filter.apply(event)).isEmpty();
             }
         );
     }

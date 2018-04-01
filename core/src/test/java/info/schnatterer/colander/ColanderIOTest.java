@@ -28,13 +28,11 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.validate.ValidationException;
-import org.hamcrest.junit.ExpectedException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import java.io.ByteArrayOutputStream;
@@ -47,18 +45,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ColanderIOTest {
+@ExtendWith(MockitoExtension.class)
+class ColanderIOTest {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ColanderIO.DATE_TIME_FORMAT_FILE_NAME);
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
     @Mock
     private CalendarBuilder builder;
     @Mock
@@ -69,51 +69,51 @@ public class ColanderIOTest {
     private String outputPath;
 
     @Test
-    public void read() throws Exception {
+    void read() throws Exception {
         Calendar expectedCalendar = mock(Calendar.class);
         InputStream stream = mock(InputStream.class);
         when(builder.build(stream)).thenReturn(expectedCalendar);
 
         Calendar actualCalender = io.read(stream);
-        assertSame("Unexpected calendar returned", expectedCalendar, actualCalender);
+        assertSame(expectedCalendar, actualCalender, "Unexpected calendar returned");
     }
 
     @Test
-    public void readException() throws Exception {
+    void readException() throws Exception {
         ParserException expectedException = new ParserException("mocked exception message", 42);
         when(builder.build(any(InputStream.class))).thenThrow(expectedException);
 
-        this.expectedException.expect(ColanderParserException.class);
-        this.expectedException.expectMessage(expectedException.getMessage());
-        io.read(mock(InputStream.class));
+        ColanderParserException actualException = assertThrows(ColanderParserException.class,
+            () -> io.read(mock(InputStream.class)));
+
+       assertEquals(expectedException.getMessage(), actualException.getMessage());
     }
 
     @Test
-    public void write() throws Exception {
+    void write() throws Exception {
         String expectedFile = "expectedFile";
 
         io.write(mock(Calendar.class), expectedFile, null);
         //calendarOutputter.output is final and cant be mocked. So assert something else
-        assertNotEquals("write() did not write anything", 0,
-            ((ByteArrayOutputStream) outStream).toByteArray().length);
+        assertNotEquals(0, ((ByteArrayOutputStream) outStream).toByteArray().length, "write() did not write anything");
     }
 
     @Test
-    public void writeValidationException() throws Exception {
+    void writeValidationException() throws Exception {
         String expectedFile = "expectedFile";
         String expectedMessage = "mocked exception message";
         outStream = mock(OutputStream.class, new ThrowValidationExceptionOnEachMethodCall(expectedMessage));
-        expectedException.expect(ColanderParserException.class);
-        expectedException.expectMessage(expectedMessage);
 
-        // Call method under test
-        io.write(mock(Calendar.class), expectedFile, null);
+        ColanderParserException actualException = assertThrows(ColanderParserException.class,
+            () ->  io.write(mock(Calendar.class), expectedFile, null));
+
+        assertEquals(expectedMessage, actualException.getMessage());
         System.out.println(mockingDetails(outStream).getInvocations());
         verify(outStream, atLeastOnce()).close();
     }
 
     @Test
-    public void writePathNull() throws Exception {
+    void writePathNull() throws Exception {
         LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
         io.write(mock(Calendar.class), null, "a/b.someEnding");
 
@@ -124,7 +124,7 @@ public class ColanderIOTest {
     }
 
     @Test
-    public void writePathNullInputPathNoFileExtension() throws Exception {
+    void writePathNullInputPathNoFileExtension() throws Exception {
         Calendar expectedCalendar = mock(Calendar.class);
         LocalDateTime dateBefore = createComparableDateNow(LocalDateTime.now().format(formatter), formatter);
 
@@ -136,20 +136,21 @@ public class ColanderIOTest {
     }
 
     @Test
-    public void writeFileExists() throws Exception {
-        expectedException.expect(FileAlreadyExistsException.class);
+    void writeFileExists() throws Exception {
 
-        io.write(mock(Calendar.class),
-            // Just use this classes file to emulate an existing file
-            createPathToClassFile(),
-            null);
+        assertThrows(FileAlreadyExistsException.class,
+            () -> io.write(mock(Calendar.class),
+                // Just use this classes file to emulate an existing file
+                createPathToClassFile(),
+                null));
     }
 
     @Test
-    public void writeFileAllArgumentsNull() throws Exception {
-        expectedException.expect(ColanderParserException.class);
-        expectedException.expectMessage("th input and output file paths are null");
-        io.write(mock(Calendar.class), null, null);
+    void writeFileAllArgumentsNull() throws Exception {
+        ColanderParserException actualException = assertThrows(ColanderParserException.class,
+            () -> io.write(mock(Calendar.class), null, null));
+
+        assertThat(actualException.getMessage(), containsString("Both input and output file paths are null"));
     }
 
     /**
@@ -179,11 +180,11 @@ public class ColanderIOTest {
     private void verifyDateInNewFileName(String writtenPath, LocalDateTime dateBefore, String extension) {
         Pattern pattern = Pattern.compile("a/b-(.*)" + extension);
         Matcher matcher = pattern.matcher(writtenPath);
-        assertTrue("Date not found in new file name", matcher.find());
+        assertTrue(matcher.find(), "Date not found in new file name");
         LocalDateTime newFileNameDate =
             LocalDateTime.parse(matcher.group(1), formatter);
-        assertTrue("Date in new file name is unexpected. Expected equal or later than " + dateBefore + ", but was " + newFileNameDate,
-            newFileNameDate.isAfter(dateBefore) || newFileNameDate.isEqual(dateBefore));
+        assertTrue(newFileNameDate.isAfter(dateBefore) || newFileNameDate.isEqual(dateBefore),
+            "Date in new file name is unexpected. Expected equal or later than " + dateBefore + ", but was " + newFileNameDate);
     }
 
     private class ColanderIOForTest extends ColanderIO {

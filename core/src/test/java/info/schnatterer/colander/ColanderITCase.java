@@ -26,24 +26,27 @@ package info.schnatterer.colander;
 import info.schnatterer.colander.test.ITCases;
 import net.fortuna.ical4j.model.Property;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * Integration tests that tests colander end-to-end, from ics file to ics file.
  */
+@EnableRuleMigrationSupport
 public class ColanderITCase {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void endToEnd() throws Exception {
+    void endToEnd() throws Exception {
         String outputPath = folder.getRoot().toString() + "/out.ics";
         String inputPath = ITCases.getFilePathTestIcs(folder);
         Colander.toss(inputPath)
@@ -59,7 +62,7 @@ public class ColanderITCase {
             .filter(Optional::of)
             .rinse()
             .toFile(outputPath);
-        assertTrue("Output not written", new File(outputPath).exists());
+        assertTrue(new File(outputPath).exists(), "Output not written");
         ITCases.verifyParsedIcs(inputPath, outputPath);
     }
 }

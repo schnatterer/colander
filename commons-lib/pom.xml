@@ -53,17 +53,10 @@
         </dependency>
 
 
-        <!-- TODO use original ical4j, when new version contains the following fix:
-         https://github.com/ical4j/ical4j/pull/127#partial-pull-merging -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.mnode.ical4j</groupId>
             <artifactId>ical4j</artifactId>
-            <version>2.0.0</version>
-        </dependency>-->
-        <dependency>
-            <groupId>com.github.schnatterer</groupId>
-            <artifactId>ical4j</artifactId>
-            <version>540d6d4609</version>
+            <version>2.0.2</version>
         </dependency>
     </dependencies>
 </project>

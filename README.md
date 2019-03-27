@@ -12,7 +12,7 @@ JVM applications using the [API](#api).
 
 # CLI
 
-* Download the latest version from [Releases](https://github.com/schnatterer/colander/releases) or Snapshot builds from [Jenkins](https://jenkins.schnatterer.info/job/colander/job/develop/).
+* Download the latest version from [Releases](https://github.com/schnatterer/colander/releases).
 * Extract the zip file.
 * Use ist as follows:
 ```

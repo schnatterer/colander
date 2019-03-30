@@ -15,7 +15,9 @@ addons:
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.branch=
-
+  # Do a very simple smoke test
+  - mvn package -Djar -DskipTests
+  - java -jar $(ls cli/target/colander-cli-*.jar) | grep -help
 cache:
   directories:
     - '$HOME/.m2/repository'

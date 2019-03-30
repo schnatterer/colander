@@ -23,7 +23,7 @@
  */
 package info.schnatterer.colander.cli;
 
-import de.triology.versionname.VersionNames;
+import com.cloudogu.versionname.VersionNames;
 import info.schnatterer.colander.Colander;
 import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
 import org.slf4j.Logger;

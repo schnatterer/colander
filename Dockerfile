@@ -25,22 +25,42 @@
 # Define maven version for all stages
 FROM maven:3.6.0-jdk-8-alpine as maven
 
+FROM maven as mavencache
+ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn
+COPY pom.xml /mvn/
+COPY cli/pom.xml /mvn/cli/
+COPY commons-lib/pom.xml /mvn/commons-lib/
+COPY core/pom.xml /mvn/core/
+COPY test-lib/pom.xml /mvn/test-lib/
+WORKDIR /mvn
+RUN echo a
+RUN mvn dependency:resolve dependency:resolve-plugins --fail-never
+
 FROM maven as mavenbuild
-COPY . /build
-WORKDIR /build
+ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn
+COPY . /mvn
+COPY --from=mavencache /mvn/ /mvn/
+WORKDIR /mvn
 RUN set -x && mvn package -Djar
+RUN mv /mvn/cli/target/colander-cli-*.jar /colander.jar
 
-FROM debian:stretch-20190326-slim AS build-env
+FROM gcr.io/distroless/java:8
+ARG VCS_REF
+ARG SOURCE_REPOSITORY_URL
+ARG GIT_TAG
+ARG BUILD_DATE
+# See https://github.com/opencontainers/image-spec/blob/master/annotations.md
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.authors="schnatterer" \
+      org.opencontainers.image.url="${SOURCE_REPOSITORY_URL}" \
+      org.opencontainers.image.documentation="${SOURCE_REPOSITORY_URL}" \
+      org.opencontainers.image.source="${SOURCE_REPOSITORY_URL}" \
+      org.opencontainers.image.version="${GIT_TAG}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.vendor="schnatterer" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.title="colander" \
+      org.opencontainers.image.description="colander - filtering your calendar"
 
-FROM oracle/graalvm-ce:1.0.0-rc14 AS native-image
-COPY --from=mavenbuild /build/cli/target/colander-cli-*.jar /app/
-WORKDIR /app
-RUN native-image -H:+ReportExceptionStackTraces  \
-  --static -H:Name=colander \
-  --delay-class-initialization-to-runtime=ch.qos.logback.classic.Logger \
-  -jar $(ls colander-cli-*.jar)
-
-FROM gcr.io/distroless/base
-COPY --from=native-image /app/colander /colander
-COPY --from=build-env /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
-CMD ["/colander"]
+COPY --from=mavenbuild /colander.jar /app/colander.jar
+ENTRYPOINT ["java", "-jar", "/app/colander.jar"]

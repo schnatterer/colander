@@ -1,10 +1,18 @@
 #!/bin/bash
 set -ex
 
+POTENTIAL_TAG=$(git name-rev --name-only --tags HEAD)
+ADDITIONAL_BUILD_ARG=""
+if [ "${POTENTIAL_TAG}" != "undefined" ]; then
+    GIT_TAG="${POTENTIAL_TAG}"
+    ADDITIONAL_BUILD_ARG="-DperformRelease"
+fi
+
 docker image build \
     --build-arg VCS_REF="${GIT_SHA1}" \
     --build-arg SOURCE_REPOSITORY_URL="${SOURCE_REPOSITORY_URL}" \
     --build-arg GIT_TAG="${GIT_TAG}" \
     --build-arg BUILD_DATE="$(date --rfc-3339 ns)" \
+    --build-arg ADDITIONAL_BUILD_ARG="${ADDITIONAL_BUILD_ARG}" \
     --tag ${IMAGE_NAME} \
     .

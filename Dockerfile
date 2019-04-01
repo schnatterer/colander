@@ -37,11 +37,14 @@ RUN echo a
 RUN mvn dependency:resolve dependency:resolve-plugins --fail-never
 
 FROM maven as mavenbuild
+ARG ADDITIONAL_BUILD_ARG
 ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn
 COPY . /mvn
 COPY --from=mavencache /mvn/ /mvn/
 WORKDIR /mvn
-RUN set -x && mvn package -Djar
+RUN set -x && mvn package -Djar ${ADDITIONAL_BUILD_ARG}
+RUN rm -rf /mvn/cli/target/colander-cli-*-sources.jar && \
+    rm -rf /mvn/cli/target/colander-cli-*-javadoc.jar
 RUN mv /mvn/cli/target/colander-cli-*.jar /colander.jar
 
 FROM gcr.io/distroless/java:8

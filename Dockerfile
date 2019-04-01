@@ -23,9 +23,13 @@
 #
 
 # Define maven version for all stages
-FROM maven:3.6.0-jdk-8-alpine as maven
+FROM maven:3.6.0-jdk-8-alpine as maven-git
+# Install git in order to be able to write version info during maven build
+RUN apk --update add git && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /var/cache/apk/*
 
-FROM maven as mavencache
+FROM maven-git as mavencache
 ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn
 COPY pom.xml /mvn/
 COPY cli/pom.xml /mvn/cli/
@@ -33,10 +37,9 @@ COPY commons-lib/pom.xml /mvn/commons-lib/
 COPY core/pom.xml /mvn/core/
 COPY test-lib/pom.xml /mvn/test-lib/
 WORKDIR /mvn
-RUN echo a
-RUN mvn dependency:resolve dependency:resolve-plugins --fail-never
+RUN mvn compile dependency:resolve dependency:resolve-plugins # --fail-never
 
-FROM maven as mavenbuild
+FROM maven-git as mavenbuild
 ARG ADDITIONAL_BUILD_ARG
 ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn
 COPY . /mvn
@@ -47,7 +50,9 @@ RUN rm -rf /mvn/cli/target/colander-cli-*-sources.jar && \
     rm -rf /mvn/cli/target/colander-cli-*-javadoc.jar
 RUN mv /mvn/cli/target/colander-cli-*.jar /colander.jar
 
-FROM gcr.io/distroless/java:8
+# Only way to make distroless build deterministic: Use repo digest
+# openjdk version "1.8.0_212"
+FROM gcr.io/distroless/java@sha256:84a63da5da6aba0f021213872de21a4f9829e4bd2801aef051cf40b6f8952e68
 ARG VCS_REF
 ARG SOURCE_REPOSITORY_URL
 ARG GIT_TAG

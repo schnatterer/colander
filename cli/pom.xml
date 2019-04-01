@@ -43,7 +43,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <!-- Printable version name -->
-        <versionName>${project.version} (${maven.build.timestamp})</versionName>
+        <versionName>${project.version} (commit ${buildNumber}; ${maven.build.timestamp})</versionName>
     </properties>
 
     <dependencies>
@@ -145,6 +145,29 @@
                     </classpathDependencyExcludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- Write the current git revision into ${buildnumber} and populate ${scmBranch} -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Get the scm revision once for all modules -->
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                    <!-- Don't fail on modified local resources -->
+                    <doCheck>false</doCheck>
+                    <!-- Don't update SCM -->
+                    <doUpdate>false</doUpdate>
+                    <!-- Use short version of git revision -->versiojn
+                    <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -161,7 +184,7 @@
             </activation>
             <properties>
                 <!-- @formatter:off -->
-                <versionName>${project.version} build #${env.BUILD_NUMBER} (${maven.build.timestamp})</versionName>
+                <versionName>${project.version} build #${env.BUILD_NUMBER} (${buildNumber}; ${maven.build.timestamp})</versionName>
                 <!-- @formatter:on -->
             </properties>
         </profile>

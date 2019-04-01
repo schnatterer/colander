@@ -5,5 +5,7 @@
 !core
 !test-lib
 !pom.xml
+# The git revision is used as part of the version name during the build
+!.git
 **/target
 **/*.iml

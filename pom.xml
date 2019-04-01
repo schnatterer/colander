@@ -35,6 +35,12 @@
 
     <name>colander-parent</name>
 
+    <scm>
+        <connection>scm:git:https://github.com/schnatterer/colander</connection>
+        <developerConnection>scm:git:https://github.com/schnatterer/colander</developerConnection>
+        <url>https://github.com/schnatterer/colander.git</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

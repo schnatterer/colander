@@ -1,5 +1,6 @@
 # 📆 colander - filtering your calendar 
 
+[![Docker Image](https://images.microbadger.com/badges/image/schnatterer/colander.svg)](https://hub.docker.com/r/schnatterer/colander/)
 [![Build Status](https://travis-ci.org/schnatterer/colander.svg?branch=develop)](https://travis-ci.org/schnatterer/colander)
 [![Quality Gates](https://sonarcloud.io/api/project_badges/measure?project=info.schnatterer.colander%3Acolander-parent&metric=alert_status)](https://sonarcloud.io/dashboard?id=info.schnatterer.colander%3Acolander-parent)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=info.schnatterer.colander%3Acolander-parent&metric=coverage)](https://sonarcloud.io/dashboard?id=info.schnatterer.colander%3Acolander-parent)

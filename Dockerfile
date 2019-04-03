@@ -60,8 +60,8 @@ ARG BUILD_DATE
 # See https://github.com/opencontainers/image-spec/blob/master/annotations.md
 LABEL org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.authors="schnatterer" \
-      org.opencontainers.image.url="${SOURCE_REPOSITORY_URL}" \
-      org.opencontainers.image.documentation="${SOURCE_REPOSITORY_URL}" \
+      org.opencontainers.image.url="https://hub.docker.com/r/schnatterer/colander/" \
+      org.opencontainers.image.documentation="https://hub.docker.com/r/schnatterer/colander/" \
       org.opencontainers.image.source="${SOURCE_REPOSITORY_URL}" \
       org.opencontainers.image.version="${GIT_TAG}" \
       org.opencontainers.image.revision="${VCS_REF}" \

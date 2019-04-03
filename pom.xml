@@ -29,7 +29,7 @@
 
     <groupId>info.schnatterer.colander</groupId>
     <artifactId>colander-parent</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
 
     <packaging>pom</packaging>
 

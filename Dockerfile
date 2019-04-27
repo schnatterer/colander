@@ -50,9 +50,37 @@ RUN rm -rf /mvn/cli/target/colander-cli-*-sources.jar && \
     rm -rf /mvn/cli/target/colander-cli-*-javadoc.jar
 RUN mv /mvn/cli/target/colander-cli-*.jar /colander.jar
 
+FROM debian:stretch-20190326-slim AS build-env
+
+FROM oracle/graalvm-ce:1.0.0-rc16 AS native-image
+COPY --from=mavenbuild /colander.jar /app/
+WORKDIR /app
+
+
+#Warning: Abort stand-alone image build. com.oracle.graal.pointsto.constraints.UnsupportedFeatureException: No instances are allowed in the image heap for a class that is initialized or reinitialized at image runtime: ch.qos.logback.classic.Logger
+#Detailed message:
+#Trace:
+#        at parsing info.schnatterer.colander.cli.ColanderCli.execute(ColanderCli.java:65)
+#Call path from entry point to info.schnatterer.colander.cli.ColanderCli.execute(String[]):
+#        at info.schnatterer.colander.cli.ColanderCli.execute(ColanderCli.java:65)
+#        at info.schnatterer.colander.cli.ColanderCli.main(ColanderCli.java:52)
+#        at com.oracle.svm.core.JavaMainWrapper.run(JavaMainWrapper.java:153)
+#        at com.oracle.svm.core.code.IsolateEnterStub.JavaMainWrapper_run_5087f5482cc9a6abc971913ece43acb471d2631b(generated:0)
+
+
+  #--delay-class-initialization-to-runtime=ch.qos.logback.classic.Logger \
+
+RUN native-image -H:+ReportExceptionStackTraces  \
+  --static -H:Name=colander \
+  --delay-class-initialization-to-runtime=ch.qos.logback.classic.Logger,info.schnatterer.colander.cli.ColanderCli,info.schnatterer.colander.ColanderIO,info.schnatterer.colander.cli.ColanderCli,net.fortuna.ical4j.model.CalendarDateFormatFactory,com.cloudogu.versionname.VersionNames,info.schnatterer.colander.FilterChain \
+  -jar colander.jar
+
 # Only way to make distroless build deterministic: Use repo digest
 # openjdk version "1.8.0_212"
-FROM gcr.io/distroless/java@sha256:84a63da5da6aba0f021213872de21a4f9829e4bd2801aef051cf40b6f8952e68
+#FROM gcr.io/distroless/java:debug
+#FROM gcr.io/distroless/java@sha256:84a63da5da6aba0f021213872de21a4f9829e4bd2801aef051cf40b6f8952e68
+FROM openjdk:8u212-slim-stretch
+#FROM gcr.io/distroless/base
 ARG VCS_REF
 ARG SOURCE_REPOSITORY_URL
 ARG GIT_TAG
@@ -70,5 +98,8 @@ LABEL org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.title="colander" \
       org.opencontainers.image.description="colander - filtering your calendar"
 
-COPY --from=mavenbuild /colander.jar /app/colander.jar
-ENTRYPOINT ["java", "-jar", "/app/colander.jar"]
+COPY --from=build-env /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
+COPY --from=native-image /app/colander /colander
+#ENTRYPOINT ["java", "-jar", "/app/colander.jar"]
+ENTRYPOINT ["/colander"]
+

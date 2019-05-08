@@ -23,11 +23,8 @@
 #
 
 # Define maven version for all stages
-FROM maven:3.6.0-jdk-8-alpine as maven-git
-# Install git in order to be able to write version info during maven build
-RUN apk --update add git && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /var/cache/apk/*
+# Contains git, in order to be able to write version info during maven build
+FROM maven:3.6.1-jdk-11 as maven-git
 
 FROM maven-git as mavencache
 ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn
@@ -51,8 +48,11 @@ RUN rm -rf /mvn/cli/target/colander-cli-*-sources.jar && \
 RUN mv /mvn/cli/target/colander-cli-*.jar /colander.jar
 
 # Only way to make distroless build deterministic: Use repo digest
-# openjdk version "1.8.0_212"
-FROM gcr.io/distroless/java@sha256:84a63da5da6aba0f021213872de21a4f9829e4bd2801aef051cf40b6f8952e68
+# $ docker pull gcr.io/distroless/java:11
+# Digest: sha256:da8aa0fa074d0ed9c4b71ad15af5dffdf6afdd768efbe2f0f7b0d60829278630
+# $ docker run --rm -ti  gcr.io/distroless/java:11  -version
+# openjdk version "11.0.2" 2019-01-15
+FROM gcr.io/distroless/java@sha256:da8aa0fa074d0ed9c4b71ad15af5dffdf6afdd768efbe2f0f7b0d60829278630
 ARG VCS_REF
 ARG SOURCE_REPOSITORY_URL
 ARG GIT_TAG

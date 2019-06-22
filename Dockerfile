@@ -23,11 +23,8 @@
 #
 
 # Define maven version for all stages
-FROM maven:3.6.0-jdk-8-alpine as maven-git
-# Install git in order to be able to write version info during maven build
-RUN apk --update add git && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /var/cache/apk/*
+# Contains git, in order to be able to write version info during maven build
+FROM maven:3.6.1-jdk-11 as maven-git
 
 FROM maven-git as mavencache
 ENV MAVEN_OPTS=-Dmaven.repo.local=/mvn

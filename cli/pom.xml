@@ -67,8 +67,10 @@
 
         <dependency>
             <groupId>com.cloudogu.versionName</groupId>
-            <artifactId>versionName</artifactId>
-            <version>2.0.0</version>
+            <artifactId>processor</artifactId>
+            <version>2.1.0</version>
+            <!-- This dependency is only needed during compile time and should not be packaged into final JAR -->
+            <scope>provided</scope>
         </dependency>
 
         <!-- test -->
@@ -117,6 +119,17 @@
                            <versionName>${versionName}</versionName>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <!-- Provide version name to versionName processor-->
+                        <arg>-AversionName=${versionName}</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 

@@ -23,7 +23,7 @@
  */
 package info.schnatterer.colander.cli;
 
-import com.cloudogu.versionname.VersionNames;
+import com.cloudogu.versionname.VersionName;
 import info.schnatterer.colander.Colander;
 import info.schnatterer.colander.cli.ArgumentsParser.ArgumentException;
 import org.slf4j.Logger;
@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Main class of Command Line Interface for colander.
  */
+@VersionName
 class ColanderCli {
     private static final String PROGRAM_NAME = "colander";
     private static final Logger LOG = LoggerFactory.getLogger(ColanderCli.class);
@@ -77,12 +78,7 @@ class ColanderCli {
     }
 
     private String createProgramNameWithVersion() {
-        String programName = PROGRAM_NAME;
-        String versionNameFromManifest = VersionNames.getVersionNameFromManifest();
-        if (!versionNameFromManifest.isEmpty()) {
-            programName = programName + " " + versionNameFromManifest;
-        }
-        return programName;
+        return PROGRAM_NAME + " " + Version.NAME;
     }
 
     /**
